@@ -259,7 +259,7 @@ __Note__ you need to prepare the output for PSF. In order to do that you need to
   * [Cytoscape installation tutorial](https://www.youtube.com/watch?v=YH-XXHhrv58)  
   * [Cytoscape tutorial for networks](https://cytoscape.org/cytoscape-tutorials/presentations/network-analysis-ebi-2021.html#/)  
     This tutotial will guide you through basic usage of cytoscape, network visualization and a hands-on experience. Just follow the arrows.  
-  * After installing Cytoscape, install the **PSFC** and **TMM** apps from the Cytoscape App Store: open `Apps -> App Store -> Show App Store`, search for "PSFC" and "TMM", and click Download for each. Then open `Apps -> App Store -> Install Apps From File`. ([Telomere Maintenance Pathway Activity Analysis Enables Tissue- and Gene-Level Inferences (Nersisyan et al., 2021)](https://doi.org/10.3389/fgene.2021.662464))  
+  * After installing Cytoscape, install the [**PSFC**](https://apps.cytoscape.org/apps/psfc) and [**TMM**](https://apps.cytoscape.org/apps/tmm) apps from the Cytoscape App Store: open `Apps -> App Store -> Show App Store`, search for "PSFC" and "TMM", and click Download for each. Then open `Apps -> App Store -> Install Apps From File`. ([Telomere Maintenance Pathway Activity Analysis Enables Tissue- and Gene-Level Inferences (Nersisyan et al., 2021)](https://doi.org/10.3389/fgene.2021.662464))  
 - Pathway Signal Flow (PSF) basic usage  
   * [PSFC user manual](https://big.sci.am/apps/psfc/PSFC_User_Manual_1.1.3.pdf)  
 - PSF for Telomere Maintenance Mechanism (TMM) pathways basic usage 
