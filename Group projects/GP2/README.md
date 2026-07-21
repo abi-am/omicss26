@@ -275,7 +275,7 @@ Once the PSFC and TMM apps are installed and your fold-change matrix is ready (E
 4. Run PSF to compute pathway signal flow for the ALT and TEL pathways across all samples.  
 5. Read the per-sample TEL and ALT pathway scores from the generated summary (`TMM_psf_summary.xls`) — these are the values you plot in the scatter plot above.  
 
-> 📎 Worked example files are in `Practice/`: `ds-23_processed-ndr-matrix.tsv` (PSF input matrix) and the `tmm/` folder (a complete TMM run output, including `TMM_psf_summary.xls`). Use `ds-23_group-labels.tsv` (sample → group) and `ds-23_group-colors.tsv` (group → color) to color the scatter-plot points by group.  
+> 📎 Use `ds-23_group-labels.tsv` (sample → group) and `ds-23_group-colors.tsv` (group → color) to color the scatter-plot points by group.  
 
 ## 8/11/2026 - 11AM-1PM, 2PM-5PM
 ### Cluster samples by gene expression  
