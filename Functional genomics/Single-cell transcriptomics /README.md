@@ -3,8 +3,7 @@
     Contributing authors: Melina Tamazyan, Ekaterina Kostiuk
   # Contents  
   ### Lecture 11:00 – 12:00
-  [Lecture for 08.15.2025](https://docs.google.com/presentation/d/1y9dZdsu_vii38DSJbjHd1iSOuKEdmrO-/edit?usp=share_link&ouid=108169334741774870734&rtpof=true&sd=true) \
-  [sc-Quiz](https://www.mentimeter.com/app/presentation/alkweigcfgxsvpukrcy8ii5z58v8j1y7/edit?question=kwmkxznzc2s7)
+  [Lecture slides](https://docs.google.com/presentation/d/1kXkgaH0Ym0tvMoHXpu6AIuAgSQb9s06g/edit?slide=id.g37061a333be_1_0#slide=id.g37061a333be_1_0) \
   
 ### Practice 
 #### Going through tutorial 12:00 - 13:00
