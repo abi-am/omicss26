@@ -265,17 +265,17 @@ __Note__ you need to prepare the output for PSF. In order to do that you need to
 - PSF for Telomere Maintenance Mechanism (TMM) pathways basic usage 
   * [TMM package user guide](https://big.sci.am/software/tmm/#userguide)
 
-Generate a scatter plot with TEL score on x-axis and ALT score on y-axis, with points showing samples and colored by group (cancer, healthy) to check how well the groups separate based on TEL, ALT pathway activity.  
-
 #### Running TMM in Cytoscape  
 Once the PSFC and TMM apps are installed and your fold-change matrix is ready (Entrez IDs, inversed fold changes — see the input format above), run the TMM analysis as follows. Refer to the [TMM package user guide](https://big.sci.am/software/tmm/#userguide) for the exact dialog options.  
 1. Open the TMM app from `Apps -> TMM` to load the built-in **ALT** and **TEL** telomere maintenance pathways.  
 2. Import your prepared expression matrix through the TMM control panel (tab-separated, genes in rows as Entrez IDs, one column per sample).  
 3. Set a run name (e.g. `tmm`) and select the sample columns to analyze; keep the default PSF settings unless the user guide states otherwise.  
 4. Run PSF to compute pathway signal flow for the ALT and TEL pathways across all samples.  
-5. Read the per-sample TEL and ALT pathway scores from the generated summary (`TMM_psf_summary.xls`) — these are the values you plot in the scatter plot above.  
+5. Read the per-sample TEL and ALT pathway scores from the generated summary and the generated `tmm_report` PDF files.
 
 > 📎 Use `ds-23_group-labels.tsv` (sample → group) and `ds-23_group-colors.tsv` (group → color) to color the scatter-plot points by group.  
+
+Now you can generate a scatter plot with TEL score on x-axis and ALT score on y-axis, with points showing samples and colored by group (cancer, healthy) to check how well the groups separate based on TEL, ALT pathway activity.  
 
 ## 8/11/2026 - 11AM-1PM, 2PM-5PM
 ### Cluster samples by gene expression  
