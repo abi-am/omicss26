@@ -3,7 +3,7 @@
     Contributing authors: Melina Tamazyan, Ekaterina Kostiuk
   # Contents  
   ### Lecture 11:00 – 12:00
-  [Lecture slides](https://docs.google.com/presentation/d/1kXkgaH0Ym0tvMoHXpu6AIuAgSQb9s06g/edit?slide=id.g37061a333be_1_0#slide=id.g37061a333be_1_0) \
+  [Lecture slides](https://docs.google.com/presentation/d/1kXkgaH0Ym0tvMoHXpu6AIuAgSQb9s06g/edit?slide=id.g37061a333be_1_0#slide=id.g37061a333be_1_0) 
   
 ### Practice 
 #### Going through tutorial 12:00 - 13:00
