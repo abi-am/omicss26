@@ -7,8 +7,6 @@
   
 ### Practice 
 
-[scRNA-seq analysis tutorial](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://satijalab.org/seurat/articles/pbmc3k_tutorial.html&ved=2ahUKEwiDvbTo5P-NAxWh7QIHHbXzI78QFnoECBUQAQ&usg=AOvVaw0IdDAx5dVzTG_RBzez-R1T)
-
 The tutorials are based on Satija lab tutorials on [scRNA-seq pipeline](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html) and on [integration](https://satijalab.org/seurat/articles/integration_introduction.html)
 
 Alternative single cell processing pipeline with scanpy for python enthusiasts (for future reference):
