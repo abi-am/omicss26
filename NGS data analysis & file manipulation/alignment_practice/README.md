@@ -151,8 +151,7 @@ Everything after the `#!/bin/bash` which starts with `#SBATCH` is the **slurm he
 
 ⚠️ **Ask for exactly what you use.** Notice that we request `--cpus-per-task=4`, but then pass `-t "${SLURM_CPUS_PER_TASK}"` to bwa instead of writing `4` a second time. Slurm sets that variable for us, so the request and the actual usage can never drift apart. This matters: if you ask slurm for 4 cores and then tell bwa `-t 16`, you will still only be given 4, and your job will spend its time competing with itself.
 
-⚠️ **Create the log folder before you submit.** Slurm will not create `log/` for you, and a job that cannot open its own output file fails immediately — without being able to write anywhere to say why. This is a classic way to lose an afternoon:
-
+⚠️ **Create the log folder before you submit.** Slurm will not create `log/` for you, and a job that cannot open its own output file fails immediately without telling you why.
 ```bash
 mkdir -p log
 ```
@@ -164,7 +163,7 @@ sbatch alignment.sh wes46
 sbatch alignment.sh wes78
 ```
 
-Each `sbatch` prints a job ID and returns straight away — the job itself runs elsewhere, which is the whole point: you can close your terminal and go home. To see what your jobs are doing:
+Each `sbatch` prints a job ID and returns straight away — the job itself runs elsewhere, so you could close your terminal and go home. To see what your jobs are doing:
 
 ```bash
 squeue -u $USER
@@ -172,7 +171,7 @@ squeue -u $USER
 
 > Note that `sbatch` reads the script itself, so unlike a script you run directly, `alignment.sh` does not need to be executable.
 
-Once your job disappears from `squeue` it has finished — but that only means it *stopped*, not that it *worked*. Always check:
+Once your job disappears from `squeue`, it has finished, but that only means it *stopped*, not that it *worked*. Always check:
 
 ```bash
 cat log/alignment_<jobid>.err    # did it complain about anything?
