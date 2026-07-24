@@ -73,7 +73,7 @@ head(colnames(seurat_obj))
 The genes in the matrix are rows and cells columns.
 ```
 # Add sample_id as a metadata column to differentiate the samples later
-seurat_obj$sample_id <- "A01"`
+seurat_obj$sample_id <- "A01"
 ```
 Then since our object contains two layers in the same RNA assay, it is best to split them into individual assays.
 ```
@@ -150,6 +150,7 @@ p <- plot1 + plot2
 p
 ```
 seurat_obj <- subset(seurat_obj, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt < 5)`
+
 VlnPlot(seurat_obj, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)`
 
 Do the same for the second Seurat object.
