@@ -14,7 +14,7 @@ Alternative single cell processing pipeline with scanpy for python enthusiasts (
 
 #### Set up the Seurat object
 
-For this tutorial, we will be analyzing a dataset of Peripheral Blood Mononuclear Cells (PBMC) from a helathy donorfreely available from 10X Genomics. The raw data can be found [here]([https://cf.10xgenomics.com/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz](https://www.10xgenomics.com/datasets/Flexv2_16k_Human_PBMCs_TotalseqC_4plex)), samples (A01, B01).
+For this tutorial, we will be analyzing a dataset of Peripheral Blood Mononuclear Cells (PBMC) from a healthy donor freely available from 10X Genomics. The raw data can be found [here]([https://cf.10xgenomics.com/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz](https://www.10xgenomics.com/datasets/Flexv2_16k_Human_PBMCs_TotalseqC_4plex)), samples (A01, B01).
 
 Install via browser direct download, or
 
