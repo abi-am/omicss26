@@ -13,8 +13,6 @@ We will now practice using bwa-mem and samtools on a toy dataset composed of 2 h
 `wes78_chr21_chr16_R1.fastq`, `wes78_chr21_chr16_R2.fastq` — Sample 2  
 
 > NOTE: human genomes are huge! The haploid genome is 3.3 Gb in length. Since processing something so large would take too much time, we selected and kept two smaller chromosomes, 16 and 21.
->  
-> Is there anything special about chr16?
 
 Your data is stored in the following directory:  
 
@@ -28,13 +26,17 @@ Navigate to the directory where you intend to work and use the path above to acc
 
 ### ALIGNMENT TO A REFERENCE
 
-Before we get to the alignment, we might need to perform **adapter trimming**.
+Before we get to the alignment, we should do some quality control. Take a look at `fastqc` reports for your samples. What do you see?
+
+> NOTE: if you don't have the reports, think back to the previous practice and produce them :)
+
+Normally, we would perform **adapter trimming** at this stage.
 
 During sequencing, adapters (sequences—short artificial sequences used in library preparation) can sometimes be read into the output FASTQ files. These non-biological sequences can interfere with downstream analysis like alignment and variant calling, so we must remove them.  
 
-Their presence is typically indicated by the FASTQC report. The reports are available for your perusal in the same folder as the data.
+Their presence is typically indicated by the FASTQC report.
 
-We will use the command line tool [cutadapt](https://cutadapt.readthedocs.io/en/stable/guide.html) for this.
+We can use the command line tool [cutadapt](https://cutadapt.readthedocs.io/en/stable/guide.html) for this.
 
 > NOTE: when performing the same operation on multiple samples, you can loop over them in your script.
 
@@ -48,6 +50,21 @@ cutadapt \
   -p sample_trimmed_R2.fastq.gz \
 sample_R1.fastq.gz sample_R2.fastq.gz
 ```
+Do your samples have adaptors that need to be trimmed?
+
+You may also encounter a sample where the end or the beginning of each read has poorer quality compared to the rest, and you might want to trim by position to only keep the high-quality parts. Use your judgement to decide how much to remove.
+
+```
+# N is the number of bases to remove
+
+cutadapt \
+    -u N -U N \
+    -o sample_trimmed_R1.fastq.gz \
+    -p sample_trimmed_R2.fastq.gz \
+sample_R1.fastq.gz sample_R2.fastq.gz
+```
+
+Decide which command suits your needs, input your sample names and parameters (adaptors, trimming positions), and trim. 
  
 ### ALIGNMENT TO A REFERENCE
 
@@ -103,7 +120,6 @@ So far we have only a command. Let us assemble it into an actual script and hand
 #SBATCH --output=log/alignment_%j.out
 #SBATCH --error=log/alignment_%j.err
 
-set -u    # stop if we ever use an undefined variable
 
 # the sample name is taken from the command line, e.g. sbatch alignment.sh wes46
 sample=$1
@@ -122,7 +138,7 @@ bwa mem -t "${SLURM_CPUS_PER_TASK}" \
   samtools view -b - > "bam/${sample}.bam"
 ```
 
-Everything between the `#!/bin/bash` line and `set -u` is the **slurm header**. To bash these are just comments — it is slurm that reads the `#SBATCH` lines, before your job ever starts, to decide what resources to give it:
+Everything after the `#!/bin/bash` which starts with `#SBATCH` is the **slurm header**. To bash these are just comments — it is slurm that reads the `#SBATCH` lines, before your job ever starts, to decide what resources to give it:
 
 | Line | What it asks for |
 |---|---|
@@ -175,7 +191,7 @@ cd bam
 samtools sort sample.bam -o sample.sorted.bam
 ```
 
-We can also index the files. Indexing allows tools to rapidly access specific regions (e.g. chr16:10000-20000) without reading the entire file. It creates an additional smaller file that acts like a lookup table to retrieve parts without reading through the entire thing (files storing genonic data are very large!).  
+We can also index the files. Indexing allows tools to rapidly access specific regions (e.g. chr16:10000-20000) without reading the entire file. It creates an additional smaller file that acts like a lookup table to retrieve parts without reading through the entire thing (files storing genomic data are very large!).  
 
 > Note: different tools require different indexes and may have their own indexing commands, such as `bwa index` for the reference sequence and `tabix` for VCF files.   
 
@@ -183,7 +199,7 @@ We can also index the files. Indexing allows tools to rapidly access specific re
 samtools index sample.sorted.bam
 ```
 
-Indexes are binary files, so we can't peek inside.We can, however, inspect a BAM file by converting it into SAM, which is a plain text format that we can view directly. Let's convert one of the BAM files and take a look at the first 50 lines.  
+Indexes are binary files, so we can't peek inside. We can, however, inspect a BAM file by converting it into SAM, which is a plain text format that we can view directly. Let's convert one of the BAM files and take a look at the first 50 lines.  
 
 ```
 # -h option tells samtools to include a header
@@ -191,11 +207,13 @@ Indexes are binary files, so we can't peek inside.We can, however, inspect a BAM
 samtools view -h sample.sorted.bam > sample.sam
 head -n 50 sample.sam
 ```
+
 You will see the SAM file header, which includes the fields @HD (tells you the SAM format version and how the sorting was performed) and @SQ (sequence dictionary) which defines the reference sequences used. These lines come from your reference FASTA and tell you the names and length or your standard chromosomes, as well as the unplaced and alternative regions. Find out more about them in this [description](https://gatk.broadinstitute.org/hc/en-us/articles/360035890951-Human-genome-reference-builds-GRCh38-or-hg38-b37-hg19) of our reference assembly.  
 
 > Try `tail` or `more` to see the actual assembly. We have quite a few header rows!
 
 You can also view the alignments directly in the terminal, either the whole file (not recommended for large datasets) or for a specific genomic region. You can check the chromosome lengths first to gauge the possible range.
+
 ```
 # check chromosome lengths (second field in the output)
 samtools idxstats sample.sorted.bam
@@ -224,6 +242,7 @@ Another thing we might want to know about our alignment is the sequencing depth 
 ```
 samtools depth sample.sorted.bam > sample.depth.txt
 ```
+
 This command outputs a text file with 3 columns: chromosome, position and depth, which tells you how many reads cover this position. Positions with 0 coverage are excluded, but you can include the `-a` parameter to force them to appear. From here, you might calculate the average depth or plot genome-wide coverage.  
 
 You can use this file to check which chromosomes (or other reference sequences) actually have coverage recorded in the depth file, and how many positions are recorded for each.  
@@ -232,4 +251,4 @@ You can use this file to check which chromosomes (or other reference sequences) 
 awk '{count[$1]++} END {for (chr in count) print chr, count[chr]}' sample.depth.txt | sort
 ```
 ---
-This concludes the demonstration. You can practice some more by completing the [exercises](https://github.com/abi-am/omicss26/blob/main/NGS%20data%20analysis%20%26%20file%20manipulation/alignment_practice/samtools_tutorial.md).
+This concludes the demonstration. You can practice some more by completing the [exercises](https://github.com/abi-am/omicss-25/blob/main/NGS%20data%20analysis%20%26%20file%20manipulation/alignment_practice/samtools_tutorial.md).  
