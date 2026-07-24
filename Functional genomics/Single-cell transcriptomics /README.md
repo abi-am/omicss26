@@ -2,11 +2,10 @@
     Primary contributor: Maria Nikoghosyan
     Contributing authors: Melina Tamazyan, Ekaterina Kostiuk
   # Contents  
-  ### Lecture 11:00 – 13:00
+  ### Lecture 
   [Lecture slides](https://docs.google.com/presentation/d/1kXkgaH0Ym0tvMoHXpu6AIuAgSQb9s06g/edit?slide=id.g37061a333be_1_0#slide=id.g37061a333be_1_0) 
   
 ### Practice 
-#### Going through tutorial 12:00 - 13:00
 
 [scRNA-seq analysis tutorial](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://satijalab.org/seurat/articles/pbmc3k_tutorial.html&ved=2ahUKEwiDvbTo5P-NAxWh7QIHHbXzI78QFnoECBUQAQ&usg=AOvVaw0IdDAx5dVzTG_RBzez-R1T)
 
