@@ -55,18 +55,18 @@ head(meta)
 ```
 
 ```
-> print(seurat_obj)
+print(seurat_obj)
 An object of class Seurat 
 18714 features across 422298 samples within 1 assay 
 Active assay: RNA (18714 features, 0 variable features)
  2 layers present: counts.Gene Expression, counts.Antibody Capture
 ```
 ```
-> rownames(seurat_obj)
+head(rownames(seurat_obj))
 
    [1] "TSPAN6"    "TNMD"      "DPM1"      "SCYL3"     "C1orf112"
 
-colnames(seurat_obj)
+head(colnames(seurat_obj))
    [1] "AAACCAATCAACCGGAAGCCCGAACT-1" "AAACCAATCAACCTTGAGCCCGAACT-1"
    [3] "AAACCAATCAACTGAAAGCCCGAACT-1" "AAACCAATCAAGCCAGAGCCCGAACT-1"
 ```
