@@ -14,7 +14,7 @@ Contributing authors: Anahit Yeghiazaryan, Davit Tarverdyan, Mher Kurghinyan
     - [HOMEWORK - TMM paper](#homework---tmm-paper)
   - [Extra reading (optional)](#extra-reading-optional)
 - [Week 2](#week-2)
-  - [7/27/2026 - 4PM-5PM](#7272026---4pm-5pm)
+  - [7/28/2026 - 4PM-5PM](#7282026---4pm-5pm)
     - [Journal club](#journal-club)
   - [7/29/2026, 7/30/2026, 7/31/2026 - 2PM-5PM (free time)](#7292026-7302026-7312026---2pm-5pm-free-time)
     - [R plotting practice](#r-plotting-practice)
@@ -89,7 +89,7 @@ Promoters are fundamental DNA sequences located just upstream of genes that serv
   * [PCA step by step](https://www.youtube.com/watch?v=FgakZw6K1QQ&t=5s) - 20 min watch
 
 ### HOMEWORK - TMM paper  
-Read this paper and prepare a 45 min (+ 15 min Q&A) journal club presentation summarizing the aim of the research, methods and key findings to present on **7/27/2026 - 4PM-5PM**: 
+Read this paper and prepare a 45 min (+ 15 min Q&A) journal club presentation summarizing the aim of the research, methods and key findings to present on **7/28/2026 - 4PM-5PM**: 
 - [Telomere Maintenance Pathway Activity Analysis Enables Tissue- and Gene-Level Inferences (Nersisyan et al., 2021)](https://pmc.ncbi.nlm.nih.gov/articles/PMC8058386/)  
 
 
@@ -110,7 +110,7 @@ Read this paper and prepare a 45 min (+ 15 min Q&A) journal club presentation su
  
 
 ## Week 2
-## 7/27/2026 - 4PM-5PM  
+## 7/28/2026 - 4PM-5PM  
 ### Journal club  
 - Journal club presentation by students on this paper:  
   [Telomere Maintenance Pathway Activity Analysis Enables Tissue- and Gene-Level Inferences (Nersisyan et al., 2021)](https://doi.org/10.3389/fgene.2021.662464)
