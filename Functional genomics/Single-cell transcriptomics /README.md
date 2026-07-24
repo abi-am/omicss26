@@ -77,8 +77,8 @@ seurat_obj$sample_id <- "A01"`
 ```
 Then since our object contains two layers in the same RNA assay, it is best to split them into individual assays.
 ```
-seurat_obj[["ADT"]] <- CreateAssayObject(counts = seurat_obj[["RNA"]]$counts.Antibody Capture)
-seurat_obj[["RNA"]] <- CreateAssayObject(counts = seurat_obj[["RNA"]]$counts.Gene Expression)
+seurat_obj[["ADT"]] <- CreateAssayObject(counts = seurat_obj[["RNA"]]$`counts.Antibody Capture`)
+seurat_obj[["RNA"]] <- CreateAssayObject(counts = seurat_obj[["RNA"]]$`counts.Gene Expression`)
 DefaultAssay(seurat_obj) <- "RNA"
 print(seurat_obj[["RNA"]])
 ```
