@@ -22,7 +22,7 @@ You are given **paired-end FASTQ files** for two samples, the files are located 
 Before starting, create the following directory structure to organize your output files:
 
 ```bash
-mkdir -p data/bam data/bam_clean data/gvcf data/vcf
+mkdir -p variant_calling/bam variant_calling/bam_clean variant_calling/gvcf variant_calling/vcf
 ```
 --- 
 ## Reference Genome
@@ -78,7 +78,7 @@ bwa mem -t 4 -R "@RG\tID:${sample}\tLB:${sample}\tSM:${sample}\tPL:ILLUMINA" \
 ${ref} \
 ${data_dir}/${sample}_chr21_chr16_R1.fastq \
 ${data_dir}/${sample}_chr21_chr16_R2.fastq | \
-samtools sort -o data/bam/${sample}_sorted.bam -
+samtools sort -o variant_calling/bam/${sample}_sorted.bam -
 
 ```
 
@@ -89,8 +89,8 @@ Although we used samtools sort above, it's recommended to re-sort the BAM using 
 gatk_bin="/mnt/nas1/proj/omicss26/soft/gatk-4.2.6.1/gatk"
 
 ${gatk_bin} SortSam \
-  -I data/bam/${sample}_sorted.bam \
-  -O data/bam_clean/${sample}_sorted.bam \
+  -I variant_calling/bam/${sample}_sorted.bam \
+  -O variant_calling/bam_clean/${sample}_sorted.bam \
   --SORT_ORDER coordinate
 ```
 
@@ -100,9 +100,9 @@ Use GATK's MarkDuplicates to identify and flag duplicate reads. This step is ess
 
 ```bash
 ${gatk_bin} MarkDuplicates \
-  -I data/bam_clean/${sample}_sorted.bam \
-  -O data/bam_clean/${sample}_dedup.bam \
-  -M data/bam_clean/${sample}_dedup_metrics.txt \
+  -I variant_calling/bam_clean/${sample}_sorted.bam \
+  -O variant_calling/bam_clean/${sample}_dedup.bam \
+  -M variant_calling/bam_clean/${sample}_dedup_metrics.txt \
   --CREATE_INDEX true
 ```
 
@@ -120,8 +120,8 @@ You can copy them into your working directory if needed.
 ```bash
 ${gatk_bin} --java-options "-Xmx16g" HaplotypeCaller \
   -R ${ref} \
-  -I data/bam_clean/${sample}_dedup.bam \
-  -O data/gvcf/${sample}.g.vcf.gz \
+  -I variant_calling/bam_clean/${sample}_dedup.bam \
+  -O variant_calling/gvcf/${sample}.g.vcf.gz \
   -ERC GVCF
 ```
 
@@ -133,9 +133,9 @@ Once you have GVCF files for both samples, combine them into a single file for j
 ``` bash
 ${gatk_bin} CombineGVCFs \
   -R ${ref} \
-  --variant data/gvcf/wes46.g.vcf.gz \
-  --variant data/gvcf/wes78.g.vcf.gz \
-  -O data/gvcf/combined.g.vcf.gz
+  --variant variant_calling/gvcf/wes46.g.vcf.gz \
+  --variant variant_calling/gvcf/wes78.g.vcf.gz \
+  -O variant_calling/gvcf/combined.g.vcf.gz
 ```
 
 ### Step 6: GenotypeGVCFs (Joint Genotyping)
@@ -144,8 +144,8 @@ Perform joint genotyping to produce the final multi-sample VCF file:
 ```bash
 ${gatk_bin} GenotypeGVCFs \
   -R ${ref} \
-  -V data/gvcf/combined.g.vcf.gz \
-  -O data/vcf/genotyped_variants.vcf.gz
+  -V variant_calling/gvcf/combined.g.vcf.gz \
+  -O variant_calling/vcf/genotyped_variants.vcf.gz
 
 ```
 
@@ -159,18 +159,18 @@ For SNPs:
 ```bash
 ${gatk_bin} SelectVariants \
   -R ${ref} \
-  -V data/vcf/genotyped_variants.vcf.gz \
+  -V variant_calling/vcf/genotyped_variants.vcf.gz \
   --select-type-to-include SNP \
-  -O data/vcf/snp_variants.vcf
+  -O variant_calling/vcf/snp_variants.vcf
 ```
 
 For INDELs:
 ```bash
 ${gatk_bin} SelectVariants \
   -R ${ref} \
-  -V data/vcf/genotyped_variants.vcf.gz \
+  -V variant_calling/vcf/genotyped_variants.vcf.gz \
   --select-type-to-include INDEL \
-  -O data/vcf/indel_variants.vcf
+  -O variant_calling/vcf/indel_variants.vcf
 
 ```
 
@@ -192,23 +192,23 @@ SNPs:
 ```bash
 ${gatk_bin} VariantFiltration \
   -R ${ref} \
-  -V data/vcf/snp_variants.vcf \
+  -V variant_calling/vcf/snp_variants.vcf \
   -filter "QD < 2.0" --filter-name "QD2" \
   -filter "QUAL < 30.0" --filter-name "QUAL30" \
   -filter "SOR > 10.0" --filter-name "SOR10" \
   -filter "FS > 60.0" --filter-name "FS60" \
-  -O data/vcf/filtered_snps.vcf
+  -O variant_calling/vcf/filtered_snps.vcf
 ```
 INDELs:
 ```bash
 ${gatk_bin} VariantFiltration \
   -R ${ref} \
-  -V data/vcf/indel_variants.vcf \
+  -V variant_calling/vcf/indel_variants.vcf \
   -filter "QD < 2.0" --filter-name "QD2" \
   -filter "QUAL < 30.0" --filter-name "QUAL30" \
   -filter "SOR > 10.0" --filter-name "SOR10" \
   -filter "FS > 100.0" --filter-name "FS100" \
-  -O data/vcf/filtered_indels.vcf
+  -O variant_calling/vcf/filtered_indels.vcf
 
 ```
 
