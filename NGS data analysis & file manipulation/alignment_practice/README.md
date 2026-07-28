@@ -174,6 +174,8 @@ squeue -u $USER
 Once your job disappears from `squeue`, it has finished, but that only means it *stopped*, not that it *worked*. Always check:
 
 ```bash
+# replace <jobid> with your actual job id (number)
+
 cat log/alignment_<jobid>.err    # did it complain about anything?
 ls -lh bam/                      # did the BAM files appear, and are they a sensible size?
 ```
@@ -188,7 +190,7 @@ First, let us sort our BAM file. Sorting is necessary to arrange reads by genomi
 
 ```
 cd bam
-samtools sort sample.bam -o sample.sorted.bam
+samtools sort sample.bam -o sample_sorted.bam
 ```
 
 We can also index the files. Indexing allows tools to rapidly access specific regions (e.g. chr16:10000-20000) without reading the entire file. It creates an additional smaller file that acts like a lookup table to retrieve parts without reading through the entire thing (files storing genomic data are very large!).  
@@ -196,7 +198,7 @@ We can also index the files. Indexing allows tools to rapidly access specific re
 > Note: different tools require different indexes and may have their own indexing commands, such as `bwa index` for the reference sequence and `tabix` for VCF files.   
 
 ```
-samtools index sample.sorted.bam
+samtools index sample_sorted.bam
 ```
 
 Indexes are binary files, so we can't peek inside. We can, however, inspect a BAM file by converting it into SAM, which is a plain text format that we can view directly. Let's convert one of the BAM files and take a look at the first 50 lines.  
@@ -204,7 +206,7 @@ Indexes are binary files, so we can't peek inside. We can, however, inspect a BA
 ```
 # -h option tells samtools to include a header
 
-samtools view -h sample.sorted.bam > sample.sam
+samtools view -h sample_sorted.bam > sample.sam
 head -n 50 sample.sam
 ```
 
@@ -216,10 +218,10 @@ You can also view the alignments directly in the terminal, either the whole file
 
 ```
 # check chromosome lengths (second field in the output)
-samtools idxstats sample.sorted.bam
+samtools idxstats sample_sorted.bam
 
 # view your desired region
-samtools view sample.sorted.bam chr1:10000-20000
+samtools view sample_sorted.bam chr1:10000-20000
 ```
 
 > You were given chromosomes 16 and 21, and yet trying to see chr1 will bring up a few rows. How come?
@@ -229,7 +231,7 @@ Let's also explore the quality of our alignment with `samtools flagstat`.
 ```
 # if you don't specify an output, fragstat will print to your console
 
-samtools flagstat sample.bam > sample.flagstat.txt
+samtools flagstat sample.bam > sample_flagstat.txt
 ```
 
 This command outputs some statistics for each sample. If you have many samples, you can write a script that collects the values of interest into a single table. You can revise what the fields mean [here](https://www.biostars.org/p/12475/).  
@@ -240,7 +242,7 @@ This command outputs some statistics for each sample. If you have many samples, 
 Another thing we might want to know about our alignment is the sequencing depth across positions. Depth refers to the number of reads that cover each position in the genome. This helps us evaluate how evenly the genome was covered and whether certain regions are under- or over-represented.  
 
 ```
-samtools depth sample.sorted.bam > sample.depth.txt
+samtools depth sample_sorted.bam > sample_depth.txt
 ```
 
 This command outputs a text file with 3 columns: chromosome, position and depth, which tells you how many reads cover this position. Positions with 0 coverage are excluded, but you can include the `-a` parameter to force them to appear. From here, you might calculate the average depth or plot genome-wide coverage.  
@@ -248,7 +250,7 @@ This command outputs a text file with 3 columns: chromosome, position and depth,
 You can use this file to check which chromosomes (or other reference sequences) actually have coverage recorded in the depth file, and how many positions are recorded for each.  
 
 ```
-awk '{count[$1]++} END {for (chr in count) print chr, count[chr]}' sample.depth.txt | sort
+awk '{count[$1]++} END {for (chr in count) print chr, count[chr]}' sample_depth.txt | sort
 ```
 ---
 This concludes the demonstration. You can practice some more by completing the [exercises](https://github.com/abi-am/omicss26/blob/main/NGS%20data%20analysis%20%26%20file%20manipulation/alignment_practice/samtools_tutorial.md).
