@@ -19,6 +19,8 @@ While going through the tutorial, you have already performed the alignment and g
 
 While solutions are available if you get stuck, we encourage you to try on your own!
 
+> NOTE: some of these commands (especially those that deal with regions/coordinates) will only work on **sorted and indexed BAM files**. Refer to the alignment tutorial to remind himself how that's done.
+
 ---
 
 ## 🔹 Exercise 1: Count the Total Number of Aligned Reads
@@ -48,7 +50,7 @@ Determine how many reads are mapped specifically to chromosome 1. This is useful
 <summary>Help, I'm lost / Check solution</summary>
 
 ```bash
-samtools view -c sample.bam chr1
+samtools view -c sample_sorted.bam chr1
 ```
 
 Explanation:
@@ -85,7 +87,7 @@ Calculate the average sequencing depth across a defined region on chromosome 16.
 <summary>Help, I'm lost / Check solution</summary>
 
 ```bash
-samtools depth -r chr16:1000000-2000000 sample.bam | awk '{sum+=$3} END {print sum/NR}'
+samtools depth -r chr16:1000000-2000000 sample_sorted.bam | awk '{sum+=$3} END {print sum/NR}'
 ```
 
 Explanation:
@@ -104,7 +106,7 @@ Count how many reads are mapped to chromosome 21 with a mapping quality (MAPQ) s
 <summary>Help, I'm lost / Check solution</summary>
 
 ```bash
-samtools view -q 30 -c sample.bam chr21
+samtools view -q 30 -c sample_sorted.bam chr21
 ```
 
 Explanation:
@@ -124,7 +126,7 @@ Extract all reads mapped to a defined genomic region (e.g., chr16:1,000,000–2,
 <summary>Help, I'm lost / Check solution</summary>
 
 ```bash
-samtools view -b sample.bam chr16:1000000-2000000 | samtools sort -o chr16_region_sorted.bam
+samtools view -b sample_sorted.bam chr16:1000000-2000000 | samtools sort -o chr16_region_sorted.bam
 ```
 
 Explanation:
@@ -144,10 +146,10 @@ Mark duplicate reads in the BAM file and calculate how many are present. This he
 
 ```bash
 # 1. Sort by read name
-samtools sort -n -o sorted_name.bam sample.bam
+samtools sort -n -o sample_sorted.bam sample.bam
 
 # 2. Add mate information
-samtools fixmate -m sorted_name.bam fixmate.bam
+samtools fixmate -m sample_sorted.bam fixmate.bam
 
 # 3. Sort back by coordinate
 samtools sort -o fixmate_sorted.bam fixmate.bam
