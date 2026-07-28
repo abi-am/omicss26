@@ -118,13 +118,13 @@ The `-q 30` option filters reads with MAPQ ≥ 30; `-c` counts them on chr21.
 ## 🔹 Exercise 6 (Advanced): Extract and Sort Reads Mapped to a Specific Region
 
 **Description:**  
-Extract all reads mapped to a defined genomic region (e.g., chr2:1,000,000–2,000,000) and sort them by coordinate. This is helpful when focusing on a gene or region of interest.
+Extract all reads mapped to a defined genomic region (e.g., chr16:1,000,000–2,000,000) and sort them by coordinate. This is helpful when focusing on a gene or region of interest.
 
 <details>
 <summary>Help, I'm lost / Check solution</summary>
 
 ```bash
-samtools view -b sample.bam chr2:1000000-2000000 | samtools sort -o chr2_region_sorted.bam
+samtools view -b sample.bam chr16:1000000-2000000 | samtools sort -o chr16_region_sorted.bam
 ```
 
 Explanation:
