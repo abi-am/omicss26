@@ -80,17 +80,17 @@ Likewise, every script should begin with a **slurm header**. You can copy the on
 ### Workflow
 
 ```text
-Steps 1–5
+Steps 1–4
 ├── Sample 1
 └── Sample 2
         ↓
-Step 6 onwards
+Step 5 onwards
 └── Joint analysis (run once)
 ```
 
-**STEPS 1-5** are performed **independently for each sample**, so you will run them twice. From **STEP 6** onwards, the two samples are **combined** and the remainder of the pipeline is run once.
+**STEPS 1-4** are performed **independently for each sample**, so you will run them twice. From **STEP 5** onwards, the two samples are **combined** and the remainder of the pipeline is run once.
 
-If you choose to combine multiple steps into a single script, make sure your script reflects this workflow — for example, by looping over both samples during Steps 1–5, or by using one script for the per-sample analysis and another for the combined analysis.
+If you choose to combine multiple steps into a single script, make sure your script reflects this workflow — for example, by looping over both samples during Steps 1–4, or by using one script for the per-sample analysis and another for the combined analysis.
 
 ---
 
@@ -136,14 +136,15 @@ ${gatk_bin} MarkDuplicates \
   --CREATE_INDEX true
 ```
 
-### Step 4: Variant Calling (HaplotypeCaller in GVCF mode)
-Generate a GVCF file for each sample using HaplotypeCaller. This mode enables joint genotyping in the next steps.
-
-⚠️ **NOTE:** Step 4 and 5 command may take quite a long time to run.  
+⚠️⚠️⚠️ **HALT HERE!** ⚠️⚠️⚠️
+Step 4 and 5 command may take quite a long time to run.  
 You can start it to make sure your code works correctly, but you don't need to let it finish.  
 The final output files are already available at:  
 `/mnt/nas1/proj/omicss26/ngs_data_analysis/variant_calling/data/gvcf and /vcf`  
 You can copy them into your working directory if needed.
+
+### Step 4: Variant Calling (HaplotypeCaller in GVCF mode)
+Generate a GVCF file for each sample using HaplotypeCaller. This mode enables joint genotyping in the next steps.
 
 > If you're using slurm, make sure the memory you allocate there matches the memory you allocate within the script.
 
