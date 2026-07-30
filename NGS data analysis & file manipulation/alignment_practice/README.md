@@ -8,6 +8,8 @@
 
 **Intended time: 1 hour.**  
 
+> A note on **set-up**: please remember to work in your dedicated directory, `/mnt/nas0/user/name`.
+
 We will now practice using bwa-mem and samtools on a toy dataset composed of 2 human WES (Whole-Exome Sequencing) samples, each in turn composed of 2 files: with forward and reverse reads. These are fastq files derived from paired-end ILLUMINA sequencing.   
 
 `wes46_chr21_chr16_R1.fastq`, `wes46_chr21_chr16_R2.fastq` — Sample 1  
@@ -75,10 +77,12 @@ Since the reads are relatively short, bwa-mem suits us best. It's a fast and eff
 
 > How would you find out how long these reads are?
 
-```
-# let's make a subdirectory for our alignment
+If you haven't already, let's set up our directories. Since the next few practical sessions all use the same samples and form a connected pipeline, we'll use a single project folder for alignment, variant calling, and annotation. Create a folder *fmf_project* with 3 subfolders: *data*, scr (scripts), and results. Normally, raw data would be stored in your *data* folder, but we'll avoid copying it from previous practice to save space. Let's also create a folder called *bam* in *results*: this is where the alignment output will go. 
 
-mkdir bam
+Keep your scripts (.sh files) in your *scr* folders to keep things tidy.
+
+```
+mkdir -p fmf_project/{data,scr,results/bam}
 ```
 
 Both `samtools` and `bwa mem` can be called anywhere; type `samtools --help` and `bwa mem -help` to make sure: if the tool is available, this command will bring up its manual in the terminal.
@@ -103,7 +107,7 @@ Since SAM files take up a lot of space, we can skip them and pipe straight to sa
 
 bwa mem -t 4 -R "@RG\tID:${sample}\tLB:${sample}\tSM:${sample}\tPL:ILLUMINA" \
   $REF $READ1 $READ2 | \
-  samtools view -Sb - > bam/${sample}.bam
+  samtools view -Sb - > results/bam/${sample}.bam
 ```
 > What are the `-t` and `-R` options for?  
   
@@ -136,7 +140,7 @@ mkdir -p bam
 bwa mem -t "${SLURM_CPUS_PER_TASK}" \
   -R "@RG\tID:${sample}\tLB:${sample}\tSM:${sample}\tPL:ILLUMINA" \
   "${ref}" "${READ1}" "${READ2}" | \
-  samtools view -b - > "bam/${sample}.bam"
+  samtools view -b - > "results/bam/${sample}.bam"
 ```
 
 Everything after the `#!/bin/bash` which starts with `#SBATCH` is the **slurm header**. To bash these are just comments — it is slurm that reads the `#SBATCH` lines, before your job ever starts, to decide what resources to give it:
