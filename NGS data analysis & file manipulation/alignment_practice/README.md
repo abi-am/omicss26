@@ -48,7 +48,7 @@ WES sequences only the **exome**—the protein-coding regions of the genome, whi
 Give the section below a skim if you're **new to bash** to remind yourself the basics of navigating folders, running scripts, and the idea of paths and variables. 
 
 <details>
-<summary>Bash refresher (optional)</summary>
+<summary>OPTIONAL BASH REFRESHER</summary>
 
 # Bash Recap
 
@@ -353,7 +353,7 @@ squeue -u $USER
 Once your job disappears from `squeue`, it has finished, but that only means it *stopped*, not that it *worked*. Always check:
 
 ```bash
-# replace <jobid> with your actual job id (number)
+# replace <jobid> with your actual job id (number), like so: alignment_4567.err
 
 cat log/alignment_<jobid>.err    # did it complain about anything?
 ls -lh bam/                      # did the BAM files appear, and are they a sensible size?
