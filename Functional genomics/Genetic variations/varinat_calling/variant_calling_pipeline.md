@@ -29,8 +29,8 @@ mkdir -p variant_calling/bam variant_calling/bam_clean variant_calling/gvcf vari
 
 We will use the GRCh38 reference genome, already prepared with the required index files for both BWA and GATK:
 
-> **Reference indexed for BWA and GATK:**  
-> `/mnt/nas1/proj/omicss26/ngs_data_analysis/alignment_samtools/ref_genome`  
+**Reference indexed for BWA and GATK:**  
+`/mnt/nas1/proj/omicss26/ngs_data_analysis/alignment_samtools/ref_genome`  
 
 > REMINDER: a quick **bash recap** is available to you in the Alignment Practice tutorial! If you find yourself getting errors about non-existent files and undefined variables, skim it again.
 
