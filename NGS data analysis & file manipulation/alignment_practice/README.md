@@ -29,14 +29,23 @@ Navigate to the directory where you intend to work and use the path above to acc
 
 > A note on **set-up**: please remember to work in your dedicated directory, `/mnt/nas0/user/name`.
 
-If you haven't already, let's set up our directories. Since the next few practical sessions all use the same samples and form a connected pipeline, we'll use a single project folder for alignment, variant calling, and annotation. Create a folder *fmf_project* with 3 subfolders: *data*, scr (scripts), and results. Normally, raw data would be stored in your *data* folder, but we'll avoid copying it from previous practice to save space. Let's also create a folder called *bam* in *results*: this is where the alignment output will go. 
+If you haven't already, let's **set up our directories**. Since the next few practical sessions all use the same samples and form a connected pipeline, we'll use a single project folder for alignment, variant calling, and annotation. Create a folder *fmf_project* with 3 subfolders: *data*, scr (scripts), and results. Normally, raw data would be stored in your *data* folder, but we'll avoid copying it from previous practice to save space. Let's also create a folder called *bam* in *results*: this is where the alignment output will go. 
 
 Keep your scripts (.sh files) in your *scr* folders to keep things tidy.
 
 ```
 mkdir -p fmf_project/{data,scr,results/bam}
 ```
-Give the section below a skim if you're new to bash to remind yourself the basics of navigating folders, running scripts, and the idea of paths and variables. 
+
+Why is the project called FMF, and why are the samples WES? 
+
+Our two samples come from the Armenian Genome Project. One is a **Whole-Exome Sequencing (WES)** sample from a healthy individual, and the other is from a patient diagnosed with **Familial Mediterranean Fever (FMF)**. FMF is a hereditary autoinflammatory disease that causes recurrent episodes of fever and painful inflammation, most commonly affecting the abdomen, chest, and joints. It is relatively common in populations from the Mediterranean region, including Armenians, and is most often caused by variants in the **MEFV** gene.
+
+WES sequences only the **exome**—the protein-coding regions of the genome, which make up about 1–2% of the human genome but contain the majority of known disease-causing variants. This makes WES a cost-effective approach for studying inherited disorders.
+
+—--
+
+Give the section below a skim if you're **new to bash** to remind yourself the basics of navigating folders, running scripts, and the idea of paths and variables. 
 
 <details>
 <summary>Bash refresher (optional)</summary>
@@ -123,6 +132,43 @@ This makes scripts easier to read and means you only need to update a path in on
 By convention, shell variables are often written in uppercase (e.g. `INPUT`), but lowercase works just as well.
 
 ---
+
+## 📝 Command-Line Arguments
+
+You may see variables assigned like this:
+
+```bash
+sample=$1
+threads=$2
+```
+
+Here, `$1`, `$2`, `$3`, ... are **command-line arguments**—values you provide when running the script.
+
+For example:
+
+```bash
+bash align.sh SampleA 8
+```
+
+makes:
+
+- `$1` → `SampleA`
+- `$2` → `8`
+
+Assigning them to variables gives them meaningful names and makes the script easier to read:
+
+```bash
+sample=$1
+threads=$2
+
+bwa mem -t "$threads" ref.fa \
+    "data/${sample}.fastq.gz" \
+    > "results/${sample}.sam"
+```
+
+This lets you reuse the same script for different samples without editing it each time.
+
+—--
 
 ## ▶️ Running a Script
 
