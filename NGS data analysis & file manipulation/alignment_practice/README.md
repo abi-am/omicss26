@@ -8,8 +8,6 @@
 
 **Intended time: 1 hour.**  
 
-> A note on **set-up**: please remember to work in your dedicated directory, `/mnt/nas0/user/name`.
-
 We will now practice using bwa-mem and samtools on a toy dataset composed of 2 human WES (Whole-Exome Sequencing) samples, each in turn composed of 2 files: with forward and reverse reads. These are fastq files derived from paired-end ILLUMINA sequencing.   
 
 `wes46_chr21_chr16_R1.fastq`, `wes46_chr21_chr16_R2.fastq` — Sample 1  
@@ -26,6 +24,145 @@ cd /mnt/nas1/proj/omicss26/ngs_data_analysis/fastqc_practice/data
 ```
 
 Navigate to the directory where you intend to work and use the path above to access your samples.   
+
+### SET-UP & BASH RECAP
+
+> A note on **set-up**: please remember to work in your dedicated directory, `/mnt/nas0/user/name`.
+
+If you haven't already, let's set up our directories. Since the next few practical sessions all use the same samples and form a connected pipeline, we'll use a single project folder for alignment, variant calling, and annotation. Create a folder *fmf_project* with 3 subfolders: *data*, scr (scripts), and results. Normally, raw data would be stored in your *data* folder, but we'll avoid copying it from previous practice to save space. Let's also create a folder called *bam* in *results*: this is where the alignment output will go. 
+
+Keep your scripts (.sh files) in your *scr* folders to keep things tidy.
+
+```
+mkdir -p fmf_project/{data,scr,results/bam}
+```
+Give the section below a skim if you're new to bash to remind yourself the basics of navigating folders, running scripts, and the idea of paths and variables. 
+
+<details>
+<summary>Bash refresher (optional)</summary>
+
+# 🔹 Bash Recap
+
+In this and the following tutorials, you'll see many code snippets. Some are **generic examples** that demonstrate how a command works rather than something you can copy and run without changes.
+
+In particular, you will often need to adjust the **paths** to your input and output files so they match your own folder structure.
+
+---
+
+## 📁 Relative vs Absolute Paths
+
+A **relative path** describes a file relative to your **current working directory**.
+
+```bash
+data/sample.fastq.gz
+../results/output.bam
+```
+
+An **absolute path** starts from the root of the filesystem and always points to the same location.
+
+```bash
+/home/student/project/data/sample.fastq.gz
+```
+
+You can check your current working directory with:
+
+```bash
+pwd
+```
+
+and list the files in it with:
+
+```bash
+ls
+```
+
+---
+
+## 📍 Why Does the Same Path Sometimes Stop Working?
+
+Relative paths depend on **where you run the command**.
+
+Suppose your project looks like this:
+
+```text
+project/
+├── data/
+├── results/
+└── scripts/
+```
+
+If you run a command from `project/`, the input file is:
+
+```bash
+data/sample.fastq.gz
+```
+
+However, if you first move into `project/scripts/`, the same file is now:
+
+```bash
+../data/sample.fastq.gz
+```
+
+The file has not moved—only your starting location has.
+
+---
+
+## 🔧 Using Variables
+
+Instead of writing the same path multiple times, you can store it in a variable.
+
+```bash
+input="data/sample.fastq.gz"
+output="results/sample.bam"
+
+bwa mem ref.fa "$input" > "$output"
+```
+
+This makes scripts easier to read and means you only need to update a path in one place if it changes.
+
+By convention, shell variables are often written in uppercase (e.g. `INPUT`), but lowercase works just as well.
+
+---
+
+## ▶️ Running a Script
+
+A Bash script is simply a text file containing a series of commands.
+
+The most common way to run one is:
+
+```bash
+bash align.sh
+```
+
+Alternatively, you can make the script executable:
+
+```bash
+chmod +x align.sh
+./align.sh
+```
+
+`chmod +x` gives the file permission to be executed. You only need to do this once for each script.
+
+---
+
+## 🛠️ Useful Commands
+
+These commands are handy whenever you're unsure where you are or what files are available.
+
+```bash
+pwd        # Show current directory
+ls         # List files
+cd folder  # Move into a directory
+cd ..      # Move up one directory
+```
+
+> **Tip:** If a command says it **cannot find a file**, first check:
+>
+> 1. Where am I? (`pwd`)
+> 2. Does the file exist here? (`ls`)
+> 3. Is the path correct (relative or absolute)?
+
+</details>
 
 ### ALIGNMENT TO A REFERENCE
 
@@ -76,14 +213,6 @@ Now we're ready to align our trimmed reads to the reference.
 Since the reads are relatively short, bwa-mem suits us best. It's a fast and efficient algorithm, but alignment is still a computationally expensive task, which is why we're limited to a small dataset for this practice. Real datasets may take days to run. 
 
 > How would you find out how long these reads are?
-
-If you haven't already, let's set up our directories. Since the next few practical sessions all use the same samples and form a connected pipeline, we'll use a single project folder for alignment, variant calling, and annotation. Create a folder *fmf_project* with 3 subfolders: *data*, scr (scripts), and results. Normally, raw data would be stored in your *data* folder, but we'll avoid copying it from previous practice to save space. Let's also create a folder called *bam* in *results*: this is where the alignment output will go. 
-
-Keep your scripts (.sh files) in your *scr* folders to keep things tidy.
-
-```
-mkdir -p fmf_project/{data,scr,results/bam}
-```
 
 Both `samtools` and `bwa mem` can be called anywhere; type `samtools --help` and `bwa mem -help` to make sure: if the tool is available, this command will bring up its manual in the terminal.
 
