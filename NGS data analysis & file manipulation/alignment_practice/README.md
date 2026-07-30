@@ -50,7 +50,7 @@ Give the section below a skim if you're **new to bash** to remind yourself the b
 <details>
 <summary>Bash refresher (optional)</summary>
 
-# 🔹 Bash Recap
+# Bash Recap
 
 In this and the following tutorials, you'll see many code snippets. Some are **generic examples** that demonstrate how a command works rather than something you can copy and run without changes.
 
@@ -58,7 +58,7 @@ In particular, you will often need to adjust the **paths** to your input and out
 
 ---
 
-## 📁 Relative vs Absolute Paths
+## Relative vs Absolute Paths
 
 A **relative path** describes a file relative to your **current working directory**.
 
@@ -87,7 +87,7 @@ ls
 
 ---
 
-## 📍 Why Does the Same Path Sometimes Stop Working?
+## Why Does the Same Path Sometimes Stop Working?
 
 Relative paths depend on **where you run the command**.
 
@@ -116,7 +116,7 @@ The file has not moved—only your starting location has.
 
 ---
 
-## 🔧 Using Variables
+## Using Variables
 
 Instead of writing the same path multiple times, you can store it in a variable.
 
@@ -133,7 +133,7 @@ By convention, shell variables are often written in uppercase (e.g. `INPUT`), bu
 
 ---
 
-## 📝 Command-Line Arguments
+## Command-Line Arguments
 
 You may see variables assigned like this:
 
@@ -191,7 +191,7 @@ chmod +x align.sh
 
 ---
 
-## 🛠️ Useful Commands
+## Useful Commands
 
 These commands are handy whenever you're unsure where you are or what files are available.
 
@@ -236,7 +236,7 @@ cutadapt \
   -p sample_trimmed_R2.fastq.gz \
 sample_R1.fastq.gz sample_R2.fastq.gz
 ```
-Do your samples have adaptors that need to be trimmed?
+Do your samples have adapters that need to be trimmed?
 
 You may also encounter a sample where the end or the beginning of each read has poorer quality compared to the rest, and you might want to trim by position to only keep the high-quality parts. Use your judgement to decide how much to remove.
 
@@ -250,7 +250,7 @@ cutadapt \
 sample_R1.fastq.gz sample_R2.fastq.gz
 ```
 
-Decide which command suits your needs, input your sample names and parameters (adaptors, trimming positions), and trim. 
+Decide which command suits your needs, input your sample names and parameters (adapters, trimming positions), and trim. 
  
 ### ALIGNMENT TO A REFERENCE
 
@@ -368,7 +368,6 @@ We now have the files describing our alignments to the reference.
 First, let us sort our BAM file. Sorting is necessary to arrange reads by genomic position, which is required before indexing or viewing by region.   
 
 ```
-cd bam
 samtools sort sample.bam -o sample_sorted.bam
 ```
 
@@ -389,7 +388,7 @@ samtools view -h sample_sorted.bam > sample.sam
 head -n 50 sample.sam
 ```
 
-You will see the SAM file header, which includes the fields @HD (tells you the SAM format version and how the sorting was performed) and @SQ (sequence dictionary) which defines the reference sequences used. These lines come from your reference FASTA and tell you the names and length or your standard chromosomes, as well as the unplaced and alternative regions. Find out more about them in this [description](https://gatk.broadinstitute.org/hc/en-us/articles/360035890951-Human-genome-reference-builds-GRCh38-or-hg38-b37-hg19) of our reference assembly.  
+You will see the SAM file header, which includes the fields @HD (tells you the SAM format version and how the sorting was performed) and @SQ (sequence dictionary) which defines the reference sequences used. These lines come from your reference FASTA and tell you the names and lengths or your standard chromosomes, as well as the unplaced and alternative regions. Find out more about them in this [description](https://gatk.broadinstitute.org/hc/en-us/articles/360035890951-Human-genome-reference-builds-GRCh38-or-hg38-b37-hg19) of our reference assembly.  
 
 > Try `tail` or `more` to see the actual assembly. We have quite a few header rows!
 
@@ -408,7 +407,7 @@ samtools view sample_sorted.bam chr1:10000-20000
 Let's also explore the quality of our alignment with `samtools flagstat`.  
 
 ```
-# if you don't specify an output, fragstat will print to your console
+# if you don't specify an output, flagstat will print to your console
 
 samtools flagstat sample.bam > sample_flagstat.txt
 ```
