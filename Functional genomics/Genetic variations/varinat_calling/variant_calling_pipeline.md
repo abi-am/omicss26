@@ -32,6 +32,7 @@ We will use the GRCh38 reference genome, already prepared with the required inde
 > **Reference indexed for BWA and GATK:**  
 > `/mnt/nas1/proj/omicss26/ngs_data_analysis/alignment_samtools/ref_genome`  
 
+> REMINDER: a quick **bash recap** is available to you in the Alignment Practice tutorial! If you find yourself getting errors about non-existent files and undefined variables, skim it again.
 
 ---
 
@@ -60,7 +61,36 @@ You will go through the following steps for **each sample**:
 
 The filtered variants are then annotated in the [next tutorial](./variant_calling_annotation.md).
 
-Below is the **example pipeline using `{sample}` as a placeholder** for your sample name (e.g., `wes46` or `wes78`). Replace `{sample}` with the actual name as needed.
+Below is the **example pipeline using `{sample}` as a placeholder** for your sample name (e.g., `wes46` or `wes78`). Don't forget to specify your sample when running your script:
+
+```bash
+sbatch variant_calling.sh wes46 # or wes78
+```
+
+You will now create your own scripts using the code provided below, adjust the paths as needed, and run each step.
+
+You may choose to:
+- write **one script per step**, or
+- combine several steps into **larger multi-step scripts**.
+
+Regardless of your approach, **every `.sh` file** should define all required variables (e.g. the GATK path, reference genome, sample name, input/output directories) at the top. Remember that variables defined in one script are **not** automatically available in another.
+
+Likewise, every script should begin with a **slurm header**. You can copy the one from the alignment practical and simply update the job name, requested resources, and log file paths.
+
+### Workflow
+
+```text
+Steps 1–5
+├── Sample 1
+└── Sample 2
+        ↓
+Step 6 onwards
+└── Joint analysis (run once)
+```
+
+**STEPS 1-5** are performed **independently for each sample**, so you will run them twice. From **STEP 6** onwards, the two samples are **combined** and the remainder of the pipeline is run once.
+
+If you choose to combine multiple steps into a single script, make sure your script reflects this workflow — for example, by looping over both samples during Steps 1–5, or by using one script for the per-sample analysis and another for the combined analysis.
 
 ---
 
@@ -71,6 +101,7 @@ Below is the **example pipeline using `{sample}` as a placeholder** for your sam
 Align paired-end reads using BWA-MEM with read group information (`@RG`), and sort the output BAM with `samtools`.
 
 ```bash
+sample=$1
 data_dir='/mnt/nas1/proj/omicss26/ngs_data_analysis/alignment_samtools/data' 
 ref='/mnt/nas1/proj/omicss26/ngs_data_analysis/alignment_samtools/ref_genome/hg38.fa'
 
@@ -95,8 +126,7 @@ ${gatk_bin} SortSam \
 ```
 
 ### Step 3: Mark Duplicates
-Use GATK's MarkDuplicates to identify and flag duplicate reads. This step is essential for accurate variant calling.
-
+Use GATK's MarkDuplicates to identify and flag duplicate reads. This step is essential for accurate variant calling.  
 
 ```bash
 ${gatk_bin} MarkDuplicates \
@@ -128,8 +158,6 @@ ${gatk_bin} --java-options "-Xmx16g" HaplotypeCaller \
 ### Step 5: Combine GVCFs
 Once you have GVCF files for both samples, combine them into a single file for joint genotyping:
 
-
-
 ``` bash
 ${gatk_bin} CombineGVCFs \
   -R ${ref} \
@@ -148,7 +176,6 @@ ${gatk_bin} GenotypeGVCFs \
   -O variant_calling/vcf/genotyped_variants.vcf.gz
 
 ```
-
 
 ### Step 7: Filter variants
 
@@ -221,8 +248,3 @@ Our variants are now called and filtered — but a VCF still only tells us *wher
 That is the subject of the next tutorial, [**variant_calling_annotation.md**](./variant_calling_annotation.md), which picks up exactly where this one stops — from `filtered_snps.vcf` and `filtered_indels.vcf`.
 
 #### End of Pipeline ####
-
-
-
-
-
