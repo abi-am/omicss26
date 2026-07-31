@@ -23,7 +23,7 @@ Genomic variations are the differences in DNA sequence—such as single-nucleoti
 
 [Here](https://docs.google.com/presentation/d/1mhHZkNLCMe_RUcEGc72AVkjGPUIIi3NP/edit?slide=id.p1#slide=id.p1) you will find the slides on  variant calling annotation.
 
-[Here](https://docs.google.com/presentation/d/12YPiEFgAVNooVEfOrIVMa_H2wkue1AT0/edit?usp=sharing&ouid=115394168503379180010&rtpof=true&sd=true) you will find the slides on how to visualize NGS data using the Integrative Genomics Viewer (IGV).
+[Here](https://docs.google.com/presentation/d/1_8IS9ACUSvOttVt6SDf3NnhpGbe7rgzd/edit?usp=drive_web&ouid=109990066013758654933&rtpof=true) you will find the slides on how to visualize NGS data using the Integrative Genomics Viewer (IGV).
 
 ### Practice
 
