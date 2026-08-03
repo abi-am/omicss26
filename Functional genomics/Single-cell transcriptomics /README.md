@@ -40,6 +40,7 @@ library(dplyr)
 library(Seurat)
 library(patchwork)
 library(hdf5r)
+library(ggplot2)
 
 # Load the downloaded PBMC datasets
 counts <- Read10X_h5("~/Documents/Rstudio/ASD_Glial/first_sc_tutorial/16k_Human_PBMCs_TotalseqC_4plex_PBMC_TotalSeqC_C-A01_sample_raw_feature_bc_matrix.h5")
@@ -187,6 +188,110 @@ By default, we employ a global-scaling normalization method “LogNormalize” t
 seurat_merged <- NormalizeData(seurat_merged, normalization.method = "LogNormalize", scale.factor = 10000)
 seurat_merged[["RNA"]]$data
 ```
+
+
+# Ensure metadata contains a sample/batch identifier column (e.g., seurat_merged$sample)
+table(seurat_merged$sample)
+
+# ==============================================================================
+# SECTION 1: LAYER MANAGEMENT & PER-SAMPLE VARIABLE FEATURES
+# ==============================================================================
+# Since the data is pre-merged, check if layers are split by sample.
+# For integration to work accurately, variable features need to be calculated 
+# per batch/sample.
+
+# If layers are currently joined, split the RNA assay by sample:
+seurat_merged[["RNA"]] <- split(seurat_merged[["RNA"]], f = seurat_merged$sample)
+
+# Identify variable features across split layers (uses existing normalized data)
+seurat_merged <- FindVariableFeatures(seurat_merged, selection.method = "vst", nfeatures = 2000)
+
+# Optional: Visualize top features
+top10 <- head(VariableFeatures(seurat_merged), 10)
+plot1 <- VariableFeaturePlot(seurat_merged)
+plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
+plot1 + plot2
+
+# ==============================================================================
+# SECTION 2: SCALING & UNINTEGRATED PCA PREPARATION
+# ==============================================================================
+# Scale data across the identified variable features prior to PCA
+seurat_merged <- ScaleData(seurat_merged, features = VariableFeatures(seurat_merged))
+
+# Run unintegrated PCA
+seurat_merged <- RunPCA(seurat_merged, features = VariableFeatures(object = seurat_merged), reduction.name = "pca")
+
+# Check unintegrated structure (to confirm if batch effects exist)
+seurat_merged <- RunUMAP(seurat_merged, dims = 1:20, reduction.name = "umap.unintegrated")
+DimPlot(seurat_merged, reduction = "umap.unintegrated", group.by = "sample") + 
+  ggtitle("Unintegrated UMAP (Check Batch Effects)")
+
+# ==============================================================================
+# SECTION 3: MULTI-SAMPLE INTEGRATION (CCA OR HARMONY)
+# ==============================================================================
+
+### Option A: Seurat v5 CCA Anchor-based Integration (Default)
+seurat_merged <- IntegrateLayers(
+  object = seurat_merged,
+  method = CCAIntegration,
+  orig.reduction = "pca",
+  new.reduction = "integrated.cca",
+  verbose = FALSE
+)
+
+### Option B: Harmony Integration (Alternative fast approach)
+# library(harmony)
+# seurat_merged <- IntegrateLayers(
+#   object = seurat_merged,
+#   method = HarmonyIntegration,
+#   orig.reduction = "pca",
+#   new.reduction = "integrated.harmony",
+#   verbose = FALSE
+# )
+
+# Re-join layers post-integration for unified downstream differential expression
+seurat_merged[["RNA"]] <- JoinLayers(seurat_merged[["RNA"]])
+
+# ==============================================================================
+# SECTION 4: DOWNSTREAM ANALYSIS ON INTEGRATED EMBEDDING
+# ==============================================================================
+
+# Target reduction choice (switch to "integrated.harmony" if using Harmony)
+target_reduction <- "integrated.cca" 
+
+# Graph building and clustering on integrated space
+seurat_merged <- FindNeighbors(seurat_merged, reduction = target_reduction, dims = 1:20)
+seurat_merged <- FindClusters(seurat_merged, resolution = 0.5)
+
+# Run UMAP on integrated space
+seurat_merged <- RunUMAP(seurat_merged, reduction = target_reduction, dims = 1:20, reduction.name = "umap")
+
+# Visualizations
+DimPlot(seurat_merged, reduction = "umap", group.by = "sample") + ggtitle("Integrated by Sample")
+DimPlot(seurat_merged, reduction = "umap", label = TRUE) + ggtitle("Integrated Clusters")
+DimPlot(seurat_merged, reduction = "umap", split.by = "sample", label = TRUE)
+
+# ==============================================================================
+# SECTION 5: CELL TYPE ANNOTATION & DIFFERENTIAL EXPRESSION
+# ==============================================================================
+# CRITICAL RULE: Perform marker checks and DE on original unintegrated RNA expression values!
+DefaultAssay(seurat_merged) <- "RNA"
+
+# 5.1 Evaluate canonical markers
+markers.to.check <- c("CD3D", "MS4A1", "NKG7", "CD14", "LYZ", "FCGR3A", "PPBP")
+FeaturePlot(seurat_merged, features = markers.to.check, reduction = "umap")
+DotPlot(seurat_merged, features = markers.to.check) + RotatedAxis()
+
+# 5.2 Find cluster markers across all clusters
+seurat_merged.markers <- FindAllMarkers(
+  seurat_merged, 
+  only.pos = TRUE, 
+  min.pct = 0.25, 
+  logfc.threshold = 0.25
+)
+
+# Save processed output
+saveRDS(seurat_merged, file = "data/seurat_merged_normalized_integrated.rds")
 
 #### Paper reading 
 
