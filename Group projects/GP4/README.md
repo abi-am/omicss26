@@ -17,7 +17,7 @@ Contributors: Melina Tamazyan, Ekaterina Kostiuk
 [About lung cancer](https://my.clevelandclinic.org/health/diseases/4375-lung-cancer) \
 [Cancer microenvironment](https://pmc.ncbi.nlm.nih.gov/articles/PMC8194051/) \
 [Paper including discussion about current understanding of lung cancer](https://pmc.ncbi.nlm.nih.gov/articles/PMC11116453/?utm_source=chatgpt.com)
-[Mechanisms of lung cancer metastasis](https://doi.org/10.1016/j.biopha.2021.112035)
+[Mechanisms of lung cancer metastasis](https://www.sciencedirect.com/science/article/pii/S0753332221002353)
 
 ___
 
