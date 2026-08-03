@@ -221,7 +221,7 @@ DimPlot(seurat_merged, reduction = "umap.unintegrated", group.by = "sample") +
   ggtitle("Unintegrated UMAP (Check Batch Effects)")
 
 
-### Option A: Seurat v5 CCA Anchor-based Integration (Default)
+### Seurat v5 CCA Anchor-based Integration (Default)
 seurat_merged <- IntegrateLayers(
   object = seurat_merged,
   method = CCAIntegration,
@@ -230,15 +230,6 @@ seurat_merged <- IntegrateLayers(
   verbose = FALSE
 )
 
-### Option B: Harmony Integration (Alternative fast approach)
-# library(harmony)
-# seurat_merged <- IntegrateLayers(
-#   object = seurat_merged,
-#   method = HarmonyIntegration,
-#   orig.reduction = "pca",
-#   new.reduction = "integrated.harmony",
-#   verbose = FALSE
-# )
 
 # Re-join layers post-integration for unified downstream differential expression
 seurat_merged[["RNA"]] <- JoinLayers(seurat_merged[["RNA"]])
