@@ -193,9 +193,6 @@ seurat_merged[["RNA"]]$data
 # Ensure metadata contains a sample/batch identifier column (e.g., seurat_merged$sample)
 table(seurat_merged$sample)
 
-# ==============================================================================
-# SECTION 1: LAYER MANAGEMENT & PER-SAMPLE VARIABLE FEATURES
-# ==============================================================================
 # Since the data is pre-merged, check if layers are split by sample.
 # For integration to work accurately, variable features need to be calculated 
 # per batch/sample.
@@ -212,9 +209,6 @@ plot1 <- VariableFeaturePlot(seurat_merged)
 plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
 plot1 + plot2
 
-# ==============================================================================
-# SECTION 2: SCALING & UNINTEGRATED PCA PREPARATION
-# ==============================================================================
 # Scale data across the identified variable features prior to PCA
 seurat_merged <- ScaleData(seurat_merged, features = VariableFeatures(seurat_merged))
 
@@ -226,9 +220,6 @@ seurat_merged <- RunUMAP(seurat_merged, dims = 1:20, reduction.name = "umap.unin
 DimPlot(seurat_merged, reduction = "umap.unintegrated", group.by = "sample") + 
   ggtitle("Unintegrated UMAP (Check Batch Effects)")
 
-# ==============================================================================
-# SECTION 3: MULTI-SAMPLE INTEGRATION (CCA OR HARMONY)
-# ==============================================================================
 
 ### Option A: Seurat v5 CCA Anchor-based Integration (Default)
 seurat_merged <- IntegrateLayers(
@@ -252,10 +243,6 @@ seurat_merged <- IntegrateLayers(
 # Re-join layers post-integration for unified downstream differential expression
 seurat_merged[["RNA"]] <- JoinLayers(seurat_merged[["RNA"]])
 
-# ==============================================================================
-# SECTION 4: DOWNSTREAM ANALYSIS ON INTEGRATED EMBEDDING
-# ==============================================================================
-
 # Target reduction choice (switch to "integrated.harmony" if using Harmony)
 target_reduction <- "integrated.cca" 
 
@@ -271,9 +258,6 @@ DimPlot(seurat_merged, reduction = "umap", group.by = "sample") + ggtitle("Integ
 DimPlot(seurat_merged, reduction = "umap", label = TRUE) + ggtitle("Integrated Clusters")
 DimPlot(seurat_merged, reduction = "umap", split.by = "sample", label = TRUE)
 
-# ==============================================================================
-# SECTION 5: CELL TYPE ANNOTATION & DIFFERENTIAL EXPRESSION
-# ==============================================================================
 # CRITICAL RULE: Perform marker checks and DE on original unintegrated RNA expression values!
 DefaultAssay(seurat_merged) <- "RNA"
 
