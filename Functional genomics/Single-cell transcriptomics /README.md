@@ -189,15 +189,10 @@ seurat_merged <- NormalizeData(seurat_merged, normalization.method = "LogNormali
 seurat_merged[["RNA"]]$data
 ```
 
-
 # Ensure metadata contains a sample/batch identifier column (e.g., seurat_merged$sample)
 table(seurat_merged$sample)
 
 # Since the data is pre-merged, check if layers are split by sample.
-# For integration to work accurately, variable features need to be calculated 
-# per batch/sample.
-
-# If layers are currently joined, split the RNA assay by sample:
 seurat_merged[["RNA"]] <- split(seurat_merged[["RNA"]], f = seurat_merged$sample)
 
 # Identify variable features across split layers (uses existing normalized data)
@@ -205,6 +200,8 @@ seurat_merged <- FindVariableFeatures(seurat_merged, selection.method = "vst", n
 
 # Optional: Visualize top features
 top10 <- head(VariableFeatures(seurat_merged), 10)
+top10
+
 plot1 <- VariableFeaturePlot(seurat_merged)
 plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
 plot1 + plot2
@@ -220,8 +217,7 @@ seurat_merged <- RunUMAP(seurat_merged, dims = 1:20, reduction.name = "umap.unin
 DimPlot(seurat_merged, reduction = "umap.unintegrated", group.by = "sample") + 
   ggtitle("Unintegrated UMAP (Check Batch Effects)")
 
-
-### Seurat v5 CCA Anchor-based Integration (Default)
+# Seurat v5 CCA Anchor-based Integration (Default)
 seurat_merged <- IntegrateLayers(
   object = seurat_merged,
   method = CCAIntegration,
@@ -229,7 +225,6 @@ seurat_merged <- IntegrateLayers(
   new.reduction = "integrated.cca",
   verbose = FALSE
 )
-
 
 # Re-join layers post-integration for unified downstream differential expression
 seurat_merged[["RNA"]] <- JoinLayers(seurat_merged[["RNA"]])
