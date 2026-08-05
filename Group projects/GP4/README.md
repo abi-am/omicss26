@@ -90,7 +90,7 @@ For cell type annotation via label transfer, we will follow [Seurat Label Transf
 [Reference paper for label transfer](https://doi.org/10.1038/s41591-023-02327-2)
 
 **How to do it:**
-- Subset the non-epithelial compartments (immune and stromal cells)
+- Read data
 - Load a public, annotated Lung TME reference atlas (e.g., from the paper or HLCA)
 - Find integration transfer anchors between the student query dataset and the reference using `FindTransferAnchors()`
 - Predict high-resolution immune cell types (e.g., Alveolar Macrophages vs. Monocyte-derived Macrophages, CD8+ Exhausted T-cells vs. Naive T-cells) using `TransferData()`
@@ -101,42 +101,7 @@ For cell type annotation via label transfer, we will follow [Seurat Label Transf
 
 ---
 
-#### Phase 4: Epithelial Clustering & Functional Naming
-
-**What to analyze:** Malignant heterogeneity and functional state transitions within the epithelial compartment.
-
-**Steps:**
-
-1. **Subset** — isolate the epithelial compartment from the fully-labeled object (`broad_celltype == "Epi"`); re-run normalization and HVG selection on the subset alone so clustering is driven only by epithelial variation
-
-2. **Normal vs Malignant classification** — score every cell with canonical signatures via `AddModuleScore()` and classify by comparing the highest normal-signature score vs the highest malignant-signature score:
-
-   | Class | Signature | Key genes |
-   |-------|-----------|-----------|
-   | Normal AT2 | Alveolar Type II | `SFTPC`, `SFTPB`, `NAPSA` |
-   | Normal AT1 | Alveolar Type I | `AGER`, `PDPN`, `CAV1` |
-   | Normal Club | Secretory airway | `SCGB1A1`, `SCGB3A1` |
-   | Normal Ciliated | Motile cilia | `FOXJ1`, `DNAI1` |
-   | Malignant Squamous | SCC program | `S100A2`, `KRT17`, `TP63` |
-   | Malignant Adeno | LUAD program | `IGFBP3`, `MUC5AC`, `AGR2` |
-   | Malignant Prolif | Cycling tumor | `MKI67`, `TOP2A`, `CDK1` |
-
-3. **Clustering with optimized parameters** — run PCA (30 PCs), auto-select dims from the elbow plot (last PC adding > 0.5 % variance), sweep resolutions 0.3 / 0.5 / 0.8 on the same UMAP embedding, and work with the resolution that produces biologically interpretable partitions
-
-4. **Top genes** — `FindAllMarkers()` (positive only, `min.pct = 0.2`, `logfc.threshold = 0.4`); visualize top 3 per cluster as a DotPlot and top 5 as a heatmap
-
-5. **GO enrichment** — run `enrichGO` (Biological Process, BH-adjusted *p* < 0.05) on the top 150 marker genes per cluster using `clusterProfiler`; save the full table and render dot-plots per cluster
-
-6. **Naming** — assign each cluster a biologically interpretable label by comparing average cluster expression against the canonical signatures (AT2 / AT1 / Club / Ciliated / Malignant-Sq / Malignant-Adeno / Malignant-Prolif / Hypoxic / EMT); produce a final annotated UMAP with named clusters
-
-**Target Deliverables:**
-
-- Plots: *Module Score Plots* showing the separation of Normal (AT2, AT1, Club, Ciliated) vs. Malignant (Squamous, Adeno, Prolif) signature scores; Marker Gene *DotPlot* displaying the top 3 specific marker genes per epithelial cluster; Expression *Heatmap* displaying the top 5 DEGs per cluster; GO Enrichment *DotPlots* showing the top 10 significantly enriched terms per cluster.
-
-- Tables: DEG Table containing log-fold changes, p-values, and percentage detection metrics, GO Enrichment Results Table containing pathways, gene ratios, and BH-adjusted p-values. Both best saved as .csv files.
----
-
-#### Phase 5: Condition Shift Analysis
+#### Phase 4: Condition Shift Analysis
 
 **What to analyze:** The architectural remodeling of both tumor and immune landscapes across the 7 specific microenvironments provided in the study metadata.
 
@@ -158,7 +123,7 @@ Generate fractional stacked bar charts showing how cell type proportions shift a
 
 ---
 
-#### Phase 6: Expanding Differential Expression Analysis
+#### Phase 5: Expanding Differential Expression Analysis
 
 **What to analyze:** The within-microenvironment shift in expression across conditions provided in the study metadata.
 
