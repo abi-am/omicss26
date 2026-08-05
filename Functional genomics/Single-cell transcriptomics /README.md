@@ -53,6 +53,10 @@ Invoke-WebRequest -Uri "same/link/to/file" -OutFile "matrix.mtx.gz"
 Invoke-WebRequest -Uri "same/link/to/file" -OutFile "barcodes.tsv.gz"
 Invoke-WebRequest -Uri "same/link/to/file" -OutFile "features.tsv.gz"
 ```
+
+The alternative link for files
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM2560248
+
 This will download the file into your current directory.
 
 We start by reading in the data. 
