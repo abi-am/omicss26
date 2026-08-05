@@ -56,6 +56,7 @@ Invoke-WebRequest -Uri "same/link/to/file" -OutFile "features.tsv.gz"
 
 The alternative link for files
 https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM2560248
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE96583
 
 This will download the file into your current directory.
 
