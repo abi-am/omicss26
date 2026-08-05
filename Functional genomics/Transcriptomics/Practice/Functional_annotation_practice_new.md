@@ -133,7 +133,7 @@ migration*, *collagen fibril organization*, and *positive regulation of cell mot
 The top term is **estrogen signaling pathway** (padj = 0.0074), driven by `ESR1`, `PGR`, `TFF1`,
 `NCOA3`, `RARA`, `BCL2`, `KRT8`, `KRT18`, `CTSD`.
 
-### Why students see these results
+### Why you see these results
 
 **Why the TNBC side lights up with ECM and migration terms.** Luminal A tumours are
 well-differentiated epithelial cells: they sit in sheets, hold onto each other through E-cadherin
@@ -169,7 +169,7 @@ from surrounding tissue — the tumour cells themselves are transcribing `COL4A1
 how they invade. In a tumour biopsy you would not be able to tell cancer-cell ECM from
 fibroblast ECM; here you can.
 
-**Why the Luminal A side looks so much weaker (0 GO:BP terms vs 644).** This surprises students,
+**Why the Luminal A side looks so much weaker (0 GO:BP terms vs 644).** This is surprising at first,
 and the honest answer is that it is a property of the *ontology*, not of the biology:
 
 - GO Biological Process is heavily populated with terms for **migration, adhesion, development, and
@@ -285,7 +285,7 @@ length(ordered_gene_list)   # 28315 — the WHOLE list, not just the significant
 range(ordered_gene_list)    # -16.8 to 22.0
 ```
 
-Three details in those four lines that students should be able to justify:
+Three details in those four lines that you should be able to justify:
 
 - **Why `stat` and not `pvalue`?** GSEA needs a *signed* ranking. A p-value is unsigned — p = 1e-20
   tells you a gene changed a lot but not in which direction, so ranking by it would put the strongest
@@ -348,7 +348,7 @@ tail(gsea_res$Results[, c("pathway", "NES", "padj", "size")], 8)
 | GOBP_ENDODERMAL_CELL_DIFFERENTIATION | −2.41 | 8.7e-08 |
 | GOBP_CHONDROCYTE_DIFFERENTIATION | −2.41 | 1.0e-10 |
 
-### Why students see these results
+### Why you see these results
 
 **Why 1,417 down but only 64 up?** This lopsidedness is the most striking thing on the plot and it
 is not a bug. Two causes, both worth understanding:
@@ -407,7 +407,7 @@ each tick and drifts down between them.
 **What this particular plot shows.** The ticks pile up at the far right and the green curve falls
 monotonically to a minimum of −0.66 near rank 25,000. NES = **−2.42**, padj = 1.4e-08.
 
-**The sign trap.** The curve goes *down* and the NES is *negative*, so students routinely write
+**The sign trap.** The curve goes *down* and the NES is *negative*, so it is tempting to conclude
 "EMT is down-regulated in TNBC" — which is exactly backwards. Negative NES means enriched at the
 **bottom** of the ranking, and the bottom of this ranking is **TNBC-high**. So EMT is
 **up-regulated in TNBC**, which is what the biology predicts: EMT drives the invasion and metastasis
@@ -455,7 +455,7 @@ ggplot(pca_df, aes(PC1, PC2, colour = Subtype)) +
 
 ![PCA plot](figures/pca_plot.png)<!-- -->
 
-### Why students see these results
+### Why you see these results
 
 **PC1 (46.4%) is the same epithelial–mesenchymal axis the enrichment analysis found.** Reading left
 to right: Luminal A (mean PC1 = −54) and HER2+ (−56) cluster tightly on the left, TNBC (+25) spreads
