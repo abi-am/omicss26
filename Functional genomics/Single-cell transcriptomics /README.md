@@ -266,22 +266,6 @@ DimPlot(seurat_merged, reduction = "umap", group.by = "condition") + ggtitle("In
 DimPlot(seurat_merged, reduction = "umap", label = TRUE) + ggtitle("Integrated Clusters")
 DimPlot(seurat_merged, reduction = "umap", split.by = "condition", label = TRUE)
 
-# CRITICAL RULE: Perform marker checks and DE on original unintegrated RNA expression values!
-DefaultAssay(seurat_merged) <- "RNA"
-
-# 5.1 Evaluate canonical markers
-markers.to.check <- c("CD3D", "MS4A1", "NKG7", "CD14", "LYZ", "FCGR3A", "PPBP")
-FeaturePlot(seurat_merged, features = markers.to.check, reduction = "umap")
-DotPlot(seurat_merged, features = markers.to.check) + RotatedAxis()
-
-# 5.2 Find cluster markers across all clusters
-seurat_merged.markers <- FindAllMarkers(
-  seurat_merged, 
-  only.pos = TRUE, 
-  min.pct = 0.25, 
-  logfc.threshold = 0.25
-)
-
 # Save processed output
 saveRDS(seurat_merged, file = "data/seurat_merged_normalized_integrated.rds")
 
