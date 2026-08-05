@@ -312,7 +312,8 @@ def plot_widget():
 
 
 
-    freq_slider = interactive(update, angle=(0, 180, 1))        
+    ## The figures must exist before `interactive` is built: `interactive` calls `update`
+    ## once at construction time, and that call reads `fig` / `rhs_fig` from this closure.
     fig = go.FigureWidget(data = final_data ).update_yaxes(scaleanchor = 'x', scaleratio= 1, range = [-1,1], visible=False).update_xaxes(range = [-1.5,1.5], visible=False)
     rhs_fig = go.FigureWidget(data = rhs_line.data + rhs_scatter.data).update_yaxes(scaleanchor = 'x', scaleratio= 1, range = [-1,1], showgrid=False, visible=False).update_xaxes(range = [-1.5,1.5], showgrid=False, visible=False)
 
@@ -320,6 +321,124 @@ def plot_widget():
 
     fig.update_layout(dict(width = 500, height = 570, plot_bgcolor = 'rgba(0,0,0,0)'))
 
+    freq_slider = interactive(update, angle=(0, 180, 1))
+
     vb = HBox((fig,(VBox(( freq_slider,rhs_fig)))))
     #vb.layout.align_items = 'center'
     return vb
+
+
+def _rotated_line_and_projections(angle):
+    """
+    Given a rotation angle in degrees, returns the endpoints of the rotated line, the
+    orthogonal projections of X onto it, and the 1-dimensional coordinates of those
+    projections along the line.
+    """
+    p0 = np.array([-1.5, 0.0])
+    p1 = np.array([ 1.5, 0.0])
+    R = rotation_matrix(angle)
+    p0r = np.asarray(R @ p0).ravel()
+    p1r = np.asarray(R @ p1).ravel()
+
+    ## Normal vector to the rotated line
+    if abs(p0r[0] - p1r[0]) < 1e-10:
+        n_line = (1, 0)
+    else:
+        n_line = (-(p0r[1] - p1r[1])/(p0r[0] - p1r[0]), 1)
+
+    projections = orthogonal_set_projection(X, n_line)
+    coords_1d = get_plane_base(projections, n_line)
+    return p0r, p1r, projections, coords_1d
+
+
+def plot_widget_mpl():
+    """
+    Matplotlib + ipywidgets version of `plot_widget`. Same picture, but drawn into an
+    `Image` widget behind a plain ipywidgets slider, both of which render in VS Code --
+    unlike plotly `FigureWidget` objects nested inside an `HBox`.
+
+    The figure is built once and only the artists' data is updated on each slider move,
+    and the resulting PNG is swapped into a single long-lived `Image` widget. Nothing in
+    the output is ever torn down, so the picture updates in place without blanking.
+    """
+    from io import BytesIO
+    from matplotlib.figure import Figure
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+    from ipywidgets import IntSlider, Image, VBox, Layout
+
+    dpi = 100
+    width_in, height_in = 11, 5
+
+    ## A bare Figure + Agg canvas, deliberately not a pyplot figure: this keeps the widget
+    ## out of the inline backend's figure registry, so it is never drawn a second time as
+    ## a normal cell output and never needs closing.
+    fig = Figure(figsize = (width_in, height_in), dpi = dpi)
+    FigureCanvasAgg(fig)
+    ax_left, ax_right = fig.subplots(1, 2)
+
+    p0r, p1r, projections, coords_1d = _rotated_line_and_projections(0)
+
+    ## Left panel: the plane, the rotating line and the projections onto it.
+    ## The artists created here are kept and mutated later instead of being recreated.
+    connectors = [ax_left.plot([p[0],o[0]], [p[1],o[1]], color = "#FF9300",
+                               linewidth = 1)[0]
+                  for p,o in zip(X, projections)]
+    ax_left.plot(pca_line[:,0], pca_line[:,1], color = "#333333",
+                 linewidth = 1.5, label = "PCA line")
+    rotating_line, = ax_left.plot([p0r[0],p1r[0]], [p0r[1],p1r[1]], color = "#0096FF",
+                                  linewidth = 1.5, label = "Rotating line")
+    ax_left.scatter(X[:,0], X[:,1], marker = 'o', color = "#C00000",
+                    s = 35, label = "Original points")
+    projected_points = ax_left.scatter(projections[:,0], projections[:,1], marker = 'x',
+                                       color = "#C00000", s = 55,
+                                       label = "Projected points")
+    ax_left.set_xlim(-1.5, 1.5)
+    ax_left.set_ylim(-1.5, 1.5)
+    ax_left.set_aspect('equal')
+    ax_left.axis('off')
+    ax_left.legend(loc = 'upper left', fontsize = 8, frameon = False)
+    left_title = ax_left.set_title("Projection onto a line rotated by 0°")
+
+    ## Right panel: the same points, now living on a single dimension
+    ax_right.plot([-1.5,1.5], [0,0], color = "#0096FF", linewidth = 1.5)
+    projected_1d = ax_right.scatter(coords_1d[:,0], np.zeros(len(coords_1d)),
+                                    marker = 'x', color = "#C00000", s = 55)
+    ax_right.set_xlim(-1.5, 1.5)
+    ax_right.set_ylim(-1, 1)
+    ax_right.set_aspect('equal')
+    ax_right.axis('off')
+    ax_right.set_title("PCA projection (1 dimension)")
+
+    def png_bytes(angle):
+        p0r, p1r, projections, coords_1d = _rotated_line_and_projections(angle)
+
+        for line,p,o in zip(connectors, X, projections):
+            line.set_data([p[0],o[0]], [p[1],o[1]])
+        rotating_line.set_data([p0r[0],p1r[0]], [p0r[1],p1r[1]])
+        projected_points.set_offsets(projections)
+        projected_1d.set_offsets(np.column_stack([coords_1d[:,0],
+                                                  np.zeros(len(coords_1d))]))
+        left_title.set_text(f"Projection onto a line rotated by {angle}°")
+
+        ## Light PNG compression: ~10 ms/frame cheaper to encode for ~9 KB more per
+        ## frame, which is the right trade when the kernel is local.
+        buffer = BytesIO()
+        fig.savefig(buffer, format = 'png', dpi = dpi,
+                    pil_kwargs = {'compress_level': 1})
+        return buffer.getvalue()
+
+    slider = IntSlider(value = 0, min = 0, max = 180, step = 1, description = 'angle',
+                       continuous_update = True,
+                       layout = Layout(width = f"{width_in * dpi}px"))
+
+    ## Fixing the displayed size stops the browser from reflowing the layout while the
+    ## next frame decodes, which is the other half of the flicker.
+    image = Image(value = png_bytes(0), format = 'png',
+                  layout = Layout(width = f"{width_in * dpi}px",
+                                  height = f"{height_in * dpi}px"))
+
+    def render(change):
+        image.value = png_bytes(change['new'])
+
+    slider.observe(render, names = 'value')
+    return VBox([slider, image])
