@@ -68,6 +68,7 @@ library(dplyr)
 library(Seurat)
 library(patchwork)
 library(ggplot2)
+library(Matrix)
 
 # Load the downloaded PBMC datasets
 input_dir <- "~/Documents/Rstudio/ASD_Glial/first_sc_tutorial"
@@ -106,6 +107,20 @@ head(meta)
 
 ```
 Repeat the steps for the interferon-stimulated dataset (`pbmc_ifn`).
+#### Load the downloaded PBMC datasets (stim/interferon condition)
+counts_ifn <- readMM(file.path(input_dir, "matrix.mtx.gz"))
+
+#### Read genes and barcodes
+genes_ifn <- read.table(file.path(input_dir, "features.tsv.gz"), header = FALSE, sep = "\t")
+barcodes_ifn <- read.table(file.path(input_dir, "barcodes.tsv.gz"), header = FALSE, sep = "\t")
+
+#### Make gene symbols unique (same duplicate HGNC issue as control)
+genes_ifn$V2 <- make.unique(genes_ifn$V2)
+rownames(counts_ifn) <- genes_ifn$V2  # or genes_ifn$V1 for Ensembl IDs
+colnames(counts_ifn) <- barcodes_ifn$V1
+
+#### Initialize the Seurat object with the raw (non-normalized) data
+pbmc_ifn <- CreateSeuratObject(counts = counts_ifn, project = "GSM2560249")
 ```
 print(pbmc)
 An object of class Seurat 
