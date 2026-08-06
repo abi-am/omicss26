@@ -54,11 +54,21 @@ Invoke-WebRequest -Uri "same/link/to/file" -OutFile "barcodes.tsv.gz"
 Invoke-WebRequest -Uri "same/link/to/file" -OutFile "features.tsv.gz"
 ```
 
-The alternative link for files
+The alternative links for files
 https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM2560248
 [https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE96583](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM2560249)
+## Control
+# 1. Download the Matrix file (.mtx.gz)
+wget https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2560nnn/GSM2560248/suppl/GSM2560248_2.1.mtx.gz
 
-This will download the file into your current directory.
+# 2. Download the Barcodes file (.tsv.gz)
+wget https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2560nnn/GSM2560248/suppl/GSM2560248_barcodes.tsv.gz
+
+# 3. Download the Genes/Features file (from Series level GSE96583)
+wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE96nnn/GSE96583/suppl/GSE96583_batch2.genes.tsv.gz
+
+wget https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2560nnn/GSM2560249/suppl/GSM2560249_2.2.mtx.gz
+wget https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2560nnn/GSM2560249/suppl/GSM2560249_barcodes.tsv.gz
 
 We start by reading in the data. 
 We next use the count matrix to create a `Seurat` object. The object serves as a container that contains both data (like the count matrix) and analysis (like PCA, or clustering results) for a single-cell dataset. For more information, check out the [docs for SeuratObject](https://satijalab.github.io/seurat-object/index.html) or the [section on object interaction](https://satijalab.org/seurat/articles/essential_commands#seurat-object-data-access) in our list of essential commands. For example, in Seurat v5, the count matrix is stored in `seurat[["RNA"]]$counts`.
