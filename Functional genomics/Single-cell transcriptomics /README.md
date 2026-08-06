@@ -57,14 +57,10 @@ Invoke-WebRequest -Uri "same/link/to/file" -OutFile "features.tsv.gz"
 The alternative links for files
 https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM2560248
 [https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE96583](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM2560249)
-## Control
-# 1. Download the Matrix file (.mtx.gz)
-wget https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2560nnn/GSM2560248/suppl/GSM2560248_2.1.mtx.gz
 
-# 2. Download the Barcodes file (.tsv.gz)
+wget https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2560nnn/GSM2560248/suppl/GSM2560248_2.1.mtx.gz
 wget https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2560nnn/GSM2560248/suppl/GSM2560248_barcodes.tsv.gz
 
-# 3. Download the Genes/Features file (from Series level GSE96583)
 wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE96nnn/GSE96583/suppl/GSE96583_batch2.genes.tsv.gz
 
 wget https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2560nnn/GSM2560249/suppl/GSM2560249_2.2.mtx.gz
