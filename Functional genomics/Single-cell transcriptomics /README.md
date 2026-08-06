@@ -216,16 +216,16 @@ seurat_merged <- NormalizeData(seurat_merged, normalization.method = "LogNormali
 seurat_merged[["RNA"]]$data
 ```
 
-# Ensure metadata contains a condition/batch identifier column (e.g., seurat_merged$condition)
+#### Ensure metadata contains a condition/batch identifier column (e.g., seurat_merged$condition)
 table(seurat_merged$condition)
 
-# Since the data is pre-merged, check if layers are split by condition.
+#### Since the data is pre-merged, check if layers are split by condition.
 seurat_merged[["RNA"]] <- split(seurat_merged[["RNA"]], f = seurat_merged$condition)
 
-# Identify variable features across split layers (uses existing normalized data)
+#### Identify variable features across split layers (uses existing normalized data)
 seurat_merged <- FindVariableFeatures(seurat_merged, selection.method = "vst", nfeatures = 2000)
 
-# Optional: Visualize top features
+####  Optional: Visualize top features
 top10 <- head(VariableFeatures(seurat_merged), 10)
 top10
 
@@ -233,18 +233,18 @@ plot1 <- VariableFeaturePlot(seurat_merged)
 plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
 plot1 + plot2
 
-# Scale data across the identified variable features prior to PCA
+#### Scale data across the identified variable features prior to PCA
 seurat_merged <- ScaleData(seurat_merged, features = VariableFeatures(seurat_merged))
 
-# Run unintegrated PCA
+#### Run unintegrated PCA
 seurat_merged <- RunPCA(seurat_merged, features = VariableFeatures(object = seurat_merged), reduction.name = "pca")
 
-# Check unintegrated structure (to confirm if batch effects exist)
+#### Check unintegrated structure (to confirm if batch effects exist)
 seurat_merged <- RunUMAP(seurat_merged, dims = 1:20, reduction.name = "umap.unintegrated")
 DimPlot(seurat_merged, reduction = "umap.unintegrated", group.by = "condition") + 
   ggtitle("Unintegrated UMAP (Check Batch Effects)")
 
-# Seurat v5 CCA Anchor-based Integration (Default)
+#### Seurat v5 CCA Anchor-based Integration (Default)
 seurat_merged <- IntegrateLayers(
   object = seurat_merged,
   method = CCAIntegration,
@@ -253,25 +253,25 @@ seurat_merged <- IntegrateLayers(
   verbose = FALSE
 )
 
-# Re-join layers post-integration for unified downstream differential expression
+#### Re-join layers post-integration for unified downstream differential expression
 seurat_merged[["RNA"]] <- JoinLayers(seurat_merged[["RNA"]])
 
-# Target reduction choice (switch to "integrated.harmony" if using Harmony)
+#### Target reduction choice (switch to "integrated.harmony" if using Harmony)
 target_reduction <- "integrated.cca" 
 
-# Graph building and clustering on integrated space
+#### Graph building and clustering on integrated space
 seurat_merged <- FindNeighbors(seurat_merged, reduction = target_reduction, dims = 1:20)
 seurat_merged <- FindClusters(seurat_merged, resolution = 0.5)
 
-# Run UMAP on integrated space
+#### Run UMAP on integrated space
 seurat_merged <- RunUMAP(seurat_merged, reduction = target_reduction, dims = 1:20, reduction.name = "umap")
 
-# Visualizations
+#### Visualizations
 DimPlot(seurat_merged, reduction = "umap", group.by = "condition") + ggtitle("Integrated by condition")
 DimPlot(seurat_merged, reduction = "umap", label = TRUE) + ggtitle("Integrated Clusters")
 DimPlot(seurat_merged, reduction = "umap", split.by = "condition", label = TRUE)
 
-# Save processed output
+#### Save processed output
 saveRDS(seurat_merged, file = "data/seurat_merged_normalized_integrated.rds")
 
 #### Paper reading 
