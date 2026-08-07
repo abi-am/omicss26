@@ -205,11 +205,11 @@ plot1 <- FeatureScatter(pbmc, feature1 = "nCount_RNA", feature2 = "percent.mt")
 plot2 <- FeatureScatter(pbmc, feature1 = "nCount_RNA", feature2 = "nFeature_RNA")
 p <- plot1 + plot2
 p
-```
+
 pbmc <- subset(pbmc, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt < 5)`
 
 VlnPlot(pbmc, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)`
-
+```
 Do the same for the second Seurat object.
 
 There are specific tools that are used to classify and remove doublets from single cell datasets. One of them is [`DoubletFinder`](https://github.com/chris-mcginnis-ucsf/DoubletFinder). It's an R package that integrates with Seurat, imulates arftificial doublets based on average gene expression and lastly classifies real cells into doublets and singlets based on proportions of artificial doublets in their vicinity in PCA-reduced space. Due to time constraints, we are not going to use DoubletFinder in this tutorial, but its a nice tool nonetheless. 
