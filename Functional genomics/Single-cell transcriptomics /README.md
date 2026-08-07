@@ -58,6 +58,7 @@ The alternative links for files
 https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM2560248
 [https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE96583](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM2560249)
 
+```
 wget https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2560nnn/GSM2560248/suppl/GSM2560248_2.1.mtx.gz
 wget https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2560nnn/GSM2560248/suppl/GSM2560248_barcodes.tsv.gz
 
@@ -65,7 +66,7 @@ wget https://ftp.ncbi.nlm.nih.gov/geo/series/GSE96nnn/GSE96583/suppl/GSE96583_ba
 
 wget https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2560nnn/GSM2560249/suppl/GSM2560249_2.2.mtx.gz
 wget https://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2560nnn/GSM2560249/suppl/GSM2560249_barcodes.tsv.gz
-
+```
 We start by reading in the data. 
 We next use the count matrix to create a `Seurat` object. The object serves as a container that contains both data (like the count matrix) and analysis (like PCA, or clustering results) for a single-cell dataset. For more information, check out the [docs for SeuratObject](https://satijalab.github.io/seurat-object/index.html) or the [section on object interaction](https://satijalab.org/seurat/articles/essential_commands#seurat-object-data-access) in our list of essential commands. For example, in Seurat v5, the count matrix is stored in `seurat[["RNA"]]$counts`.
 
@@ -113,6 +114,7 @@ head(meta)
 
 ```
 Repeat the steps for the interferon-stimulated dataset (`pbmc_ifn`).
+```
 #### Load the downloaded PBMC datasets (stim/interferon condition)
 counts_ifn <- readMM(file.path(input_dir, "matrix.mtx.gz"))
 
@@ -127,6 +129,7 @@ colnames(counts_ifn) <- barcodes_ifn$V1
 
 #### Initialize the Seurat object with the raw (non-normalized) data
 pbmc_ifn <- CreateSeuratObject(counts = counts_ifn, project = "GSM2560249")
+```
 ```
 print(pbmc)
 An object of class Seurat 
@@ -238,34 +241,43 @@ seurat_merged[["RNA"]]$data
 ```
 
 #### Ensure metadata contains a condition/batch identifier column (e.g., seurat_merged$condition)
+```
 table(seurat_merged$condition)
+```
 
 #### Since the data is pre-merged, check if layers are split by condition.
+```
 seurat_merged[["RNA"]] <- split(seurat_merged[["RNA"]], f = seurat_merged$condition)
-
+```
 #### Identify variable features across split layers (uses existing normalized data)
+```
 seurat_merged <- FindVariableFeatures(seurat_merged, selection.method = "vst", nfeatures = 2000)
-
+```
 ####  Optional: Visualize top features
+```
 top10 <- head(VariableFeatures(seurat_merged), 10)
 top10
 
 plot1 <- VariableFeaturePlot(seurat_merged)
 plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
 plot1 + plot2
-
+```
 #### Scale data across the identified variable features prior to PCA
+```
 seurat_merged <- ScaleData(seurat_merged, features = VariableFeatures(seurat_merged))
-
+```
 #### Run unintegrated PCA
+```
 seurat_merged <- RunPCA(seurat_merged, features = VariableFeatures(object = seurat_merged), reduction.name = "pca")
-
+```
 #### Check unintegrated structure (to confirm if batch effects exist)
+```
 seurat_merged <- RunUMAP(seurat_merged, dims = 1:20, reduction.name = "umap.unintegrated")
 DimPlot(seurat_merged, reduction = "umap.unintegrated", group.by = "condition") + 
   ggtitle("Unintegrated UMAP (Check Batch Effects)")
-
+```
 #### Seurat v5 CCA Anchor-based Integration (Default)
+```
 seurat_merged <- IntegrateLayers(
   object = seurat_merged,
   method = CCAIntegration,
@@ -273,28 +285,34 @@ seurat_merged <- IntegrateLayers(
   new.reduction = "integrated.cca",
   verbose = FALSE
 )
-
+```
 #### Re-join layers post-integration for unified downstream differential expression
+```
 seurat_merged[["RNA"]] <- JoinLayers(seurat_merged[["RNA"]])
-
+```
 #### Target reduction choice (switch to "integrated.harmony" if using Harmony)
+```
 target_reduction <- "integrated.cca" 
-
+```
 #### Graph building and clustering on integrated space
+```
 seurat_merged <- FindNeighbors(seurat_merged, reduction = target_reduction, dims = 1:20)
 seurat_merged <- FindClusters(seurat_merged, resolution = 0.5)
-
+```
 #### Run UMAP on integrated space
+```
 seurat_merged <- RunUMAP(seurat_merged, reduction = target_reduction, dims = 1:20, reduction.name = "umap")
-
+```
 #### Visualizations
+```
 DimPlot(seurat_merged, reduction = "umap", group.by = "condition") + ggtitle("Integrated by condition")
 DimPlot(seurat_merged, reduction = "umap", label = TRUE) + ggtitle("Integrated Clusters")
 DimPlot(seurat_merged, reduction = "umap", split.by = "condition", label = TRUE)
-
+```
 #### Save processed output
+```
 saveRDS(seurat_merged, file = "data/seurat_merged_normalized_integrated.rds")
-
+```
 #### Paper reading 
 
 Homework 1 - to read the paper about the general guidelines for scRNA-seq analysis, prepare a short summary report \
