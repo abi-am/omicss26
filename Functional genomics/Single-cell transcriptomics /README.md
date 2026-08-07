@@ -12,6 +12,7 @@ The tutorials are based on Satija lab tutorials on [scRNA-seq pipeline](https://
 Alternative single cell processing pipeline with scanpy for python enthusiasts (for future reference):
 [tutorial](https://scanpy.scverse.org/en/stable/tutorials/basics/clustering.html)
 
+Install Seurat - https://satijalab.org/seurat/articles/install_v5
 #### Set up the Seurat object
 
 For this tutorial, we will be analyzing a dataset of Peripheral Blood Mononuclear Cells (PBMC) before and after interferon (IFN-b) stimulation. The raw data can be found [here](https://www.ncbi.nlm.nih.gov/gds/302560248) and [here](https://www.ncbi.nlm.nih.gov/gds/302560249), control and ifn, respectively.
