@@ -196,7 +196,7 @@ A few QC metrics [commonly used](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4
     - We use the set of all genes starting with `MT-` as a set of mitochondrial genes
 ```
 #Calculate MT%
-pbmc[["percent.mt"]] <- PercentageFeatureSet(pbmc, pattern = "^MT.")
+pbmc[["percent.mt"]] <- PercentageFeatureSet(pbmc, pattern = "^MT-")
 #Visualize QC metrics as a violin plot
 VlnPlot(pbmc, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
 
