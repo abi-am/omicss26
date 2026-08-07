@@ -221,7 +221,7 @@ Before proceeding to normalisation, scaling and variable features extraction, we
 seurat_merged <- merge(
   x = pbmc,
   y = pbmc_ifn,
-  add.cell.ids = c("CTRL", "STIM"),
+  add.cell.ids = c("Control", "STIM"),
   project = "PBMC"
 )
 ```
