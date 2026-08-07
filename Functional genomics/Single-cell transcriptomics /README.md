@@ -152,7 +152,7 @@ pbmc_ifn$condition <- "Stim"
 ```
 You can also visually inspect the counts matrix.
 ```
-> pbmc2[["RNA"]]$counts[1:5, 1:5]
+> pbmc[["RNA"]]$counts[1:5, 1:5]
 ```
 ```
 5 x 5 sparse Matrix of class "dgCMatrix"
